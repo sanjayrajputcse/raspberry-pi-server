@@ -3,7 +3,7 @@ package com.moksha.raspberrypi.server;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Guice;
 import com.moksha.raspberrypi.server.dao.GuiceInjector;
-import com.moksha.raspberrypi.server.models.entities.Device;
+import com.moksha.raspberrypi.server.models.entities.*;
 import com.moksha.raspberrypi.server.resources.AppHealthCheck;
 import com.moksha.raspberrypi.server.resources.DeviceResource;
 import io.dropwizard.db.DataSourceFactory;
@@ -25,7 +25,8 @@ public class RPiApplication extends io.dropwizard.Application<RPiConfiguration> 
         return "Raspberry Pi Server";
     }
 
-    private final HibernateBundle<RPiConfiguration> hibernate = new HibernateBundle<RPiConfiguration>(Device.class) {
+    private final HibernateBundle<RPiConfiguration> hibernate = new HibernateBundle<RPiConfiguration>(Device.class, Unit.class,
+            Sensor.class, DeviceSensor.class, Specification.class, DeviceSpecification.class) {
         @Override
         public DataSourceFactory getDataSourceFactory(RPiConfiguration piConfiguration) {
             return piConfiguration.getDatabase();

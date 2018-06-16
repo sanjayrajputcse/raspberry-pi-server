@@ -1,21 +1,27 @@
 package com.moksha.raspberrypi.server.models.entities;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "devices")
-public class Device {
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
+public class Device extends AbstractTimeEntity {
 
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", unique = true, nullable = false)
     private String name;
 
     @Column(name = "gen")
@@ -24,6 +30,9 @@ public class Device {
     @Column(name = "model")
     private String model;
 
-    @Column(name = "bought_on")
-    private Timestamp boughtOn;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "device", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<DeviceSensor> sensors;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "device", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<DeviceSpecification> specifications;
 }

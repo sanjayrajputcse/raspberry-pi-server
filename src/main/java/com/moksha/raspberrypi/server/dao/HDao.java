@@ -31,6 +31,7 @@ public abstract class HDao<T> extends AbstractDAO<T> {
 
     public List<T> getAll(Class<T> criteriaType) throws HibernateException {
         Criteria criteria = currentSession().createCriteria(criteriaType);
+        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }
 
