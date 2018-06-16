@@ -1,0 +1,3 @@
+.idea/*
+scripts/gcloud_tunnel.sh
+target/*

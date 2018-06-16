@@ -1,0 +1,39 @@
+application: Raspberry-Pi-Server
+
+server:
+  #adminMinThreads: 1
+  #adminMaxThreads: 64
+  applicationConnectors:
+    - type: http
+      port: 20000
+    #  keyStorePath: example.keystore
+    #  keyStorePassword: example
+    #  validateCerts: false
+  adminConnectors:
+    - type: http
+      port: 20001
+    #  keyStorePath: example.keystore
+    #  keyStorePassword: example
+    #  validateCerts: false
+#  registerDefaultExceptionMappers: false
+  requestLog:
+     appenders:
+       - type: file
+         currentLogFilename: /var/log/moksha/raspberry-pi-server/requests.log
+         archive: true
+         archivedLogFilenamePattern: /var/log/moksha/raspberry-pi-server/requests-%d{yyyy-MM-dd}.log
+         archivedFileCount: 50
+
+logging:
+  level: INFO
+  appenders:
+      - type: console
+        logFormat: "%date %level [%thread] %logger{10} [%X{id}] %msg%n"
+      - type: file
+        threshold: ALL
+        timeZone: IST
+        logFormat: "%date %level [%thread] %logger{10} [%X{id}] %msg%n"
+        currentLogFilename: /var/log/moksha/raspberry-pi-server/server.log
+        archive: true
+        archivedLogFilenamePattern: /var/log/moksha/raspberry-pi-server/server-%d{yyyy-MM-dd}.log
+        archivedFileCount: 20
