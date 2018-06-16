@@ -1,6 +1,9 @@
 package com.moksha.raspberrypi.server.resources;
 
-import com.google.common.collect.Lists;
+import com.google.inject.Inject;
+import com.moksha.raspberrypi.server.dao.DeviceDAO;
+import com.moksha.raspberrypi.server.models.entities.Device;
+import io.dropwizard.hibernate.UnitOfWork;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -14,8 +17,12 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 public class DeviceResource {
 
+    @Inject
+    private DeviceDAO deviceDAO;
+
     @GET
-    public List<String> getAll() {
-        return Lists.newArrayList("1", "2", "3");
+    @UnitOfWork
+    public List<Device> getAll() {
+        return deviceDAO.getAll(Device.class);
     }
 }
