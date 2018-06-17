@@ -46,7 +46,7 @@ database:
   # the password
   password: raspberry
   # the JDBC URL
-  url: jdbc:mysql://35.231.5.148:3306/raspberry
+  url: jdbc:mysql://localhost:3306/raspberry
   # any properties specific to your JDBC driver:
   properties:
    charSet: UTF-8
