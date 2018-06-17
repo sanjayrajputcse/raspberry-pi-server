@@ -17,7 +17,6 @@ import java.util.Set;
 public class Device extends AbstractTimeEntity {
 
     @Id
-    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
@@ -33,6 +32,9 @@ public class Device extends AbstractTimeEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "device", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DeviceSensor> sensors;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "device", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Application> applications;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "device", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DeviceSpecification> specifications;

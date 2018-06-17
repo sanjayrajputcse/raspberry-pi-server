@@ -2,7 +2,10 @@ package com.moksha.raspberrypi.server.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
@@ -11,9 +14,10 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "sensors")
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class Sensor extends AbstractTimeEntity {
+@Table(name = "applications")
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class Application extends AbstractTimeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -25,7 +29,9 @@ public class Sensor extends AbstractTimeEntity {
     @Column(name = "description")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "unit_id")
-    private Unit unit;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "device_id")
+    private Device device;
+
 }

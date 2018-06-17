@@ -15,7 +15,6 @@ import javax.persistence.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SensorPin extends AbstractTimeEntity {
     @Id
-    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;

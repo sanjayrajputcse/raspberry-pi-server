@@ -1,5 +1,4 @@
 .idea/*
-scripts/gcloud_tunnel.sh
 target/*
 *.iml
 *.ipr

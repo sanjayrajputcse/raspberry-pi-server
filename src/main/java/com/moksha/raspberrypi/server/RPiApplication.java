@@ -3,8 +3,10 @@ package com.moksha.raspberrypi.server;
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Guice;
 import com.moksha.raspberrypi.server.dao.GuiceInjector;
+import com.moksha.raspberrypi.server.filters.RequestFilter;
 import com.moksha.raspberrypi.server.models.entities.*;
 import com.moksha.raspberrypi.server.resources.AppHealthCheck;
+import com.moksha.raspberrypi.server.resources.ApplicationResource;
 import com.moksha.raspberrypi.server.resources.DeviceResource;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
@@ -26,7 +28,8 @@ public class RPiApplication extends io.dropwizard.Application<RPiConfiguration> 
     }
 
     private final HibernateBundle<RPiConfiguration> hibernate = new HibernateBundle<RPiConfiguration>(Device.class, Unit.class,
-            Sensor.class, DeviceSensor.class, Specification.class, DeviceSpecification.class, SensorPin.class) {
+            Sensor.class, DeviceSensor.class, Specification.class, DeviceSpecification.class, SensorPin.class,
+            Application.class, ApplicationAction.class) {
         @Override
         public DataSourceFactory getDataSourceFactory(RPiConfiguration piConfiguration) {
             return piConfiguration.getDatabase();
@@ -41,8 +44,18 @@ public class RPiApplication extends io.dropwizard.Application<RPiConfiguration> 
     @Override
     public void run(RPiConfiguration rPiConfiguration, Environment environment) throws Exception {
         GuiceInjector.assignInjector(Guice.createInjector(new RPiModule(hibernate)));
+
+        //filters
+        environment.jersey().register(GuiceInjector.getInjector().getInstance(RequestFilter.class));
+
+        //app resources
         environment.jersey().register(GuiceInjector.getInjector().getInstance(DeviceResource.class));
+        environment.jersey().register(GuiceInjector.getInjector().getInstance(ApplicationResource.class));
+
+        //app manage resources
         environment.lifecycle().manage(new RPiManage());
+
+        //app healthchecks
         environment.healthChecks().register("healthCheck", new AppHealthCheck());
     }
 }
