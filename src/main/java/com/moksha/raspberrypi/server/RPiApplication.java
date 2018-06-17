@@ -26,7 +26,7 @@ public class RPiApplication extends io.dropwizard.Application<RPiConfiguration> 
     }
 
     private final HibernateBundle<RPiConfiguration> hibernate = new HibernateBundle<RPiConfiguration>(Device.class, Unit.class,
-            Sensor.class, DeviceSensor.class, Specification.class, DeviceSpecification.class) {
+            Sensor.class, DeviceSensor.class, Specification.class, DeviceSpecification.class, SensorPin.class) {
         @Override
         public DataSourceFactory getDataSourceFactory(RPiConfiguration piConfiguration) {
             return piConfiguration.getDatabase();

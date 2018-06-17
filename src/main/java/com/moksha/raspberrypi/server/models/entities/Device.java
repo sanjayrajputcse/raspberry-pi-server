@@ -1,6 +1,7 @@
 package com.moksha.raspberrypi.server.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,7 +13,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "devices")
-@EqualsAndHashCode(of = {"id"}, callSuper = false)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Device extends AbstractTimeEntity {
 
     @Id
@@ -30,9 +31,9 @@ public class Device extends AbstractTimeEntity {
     @Column(name = "model")
     private String model;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "device", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "device", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DeviceSensor> sensors;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "device", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "device", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DeviceSpecification> specifications;
 }

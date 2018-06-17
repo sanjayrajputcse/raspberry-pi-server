@@ -1,6 +1,8 @@
 package com.moksha.raspberrypi.server.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "units")
-@EqualsAndHashCode(of = {"id"}, callSuper = false)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Unit extends AbstractTimeEntity {
     @Id
     @JsonIgnore

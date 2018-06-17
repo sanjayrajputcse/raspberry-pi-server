@@ -2,25 +2,32 @@ package com.moksha.raspberrypi.server.models.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "specifications")
+@Table(name = "sensor_pins")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Specification extends AbstractTimeEntity {
+public class SensorPin extends AbstractTimeEntity {
     @Id
     @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "GPIO_Pin")
+    private String GPIOPin;
+
+    @Column(name = "type")
+    private String type;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "device_sensor_id")
+    private DeviceSensor deviceSensor;
 }
