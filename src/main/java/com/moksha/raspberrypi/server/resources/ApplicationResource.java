@@ -12,7 +12,6 @@ import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/v0/applications")
@@ -41,12 +40,16 @@ public class ApplicationResource {
     @GET
     @UnitOfWork
     @Path("/actions")
-    public List<ApplicationAction> getNewActions(@Context ContainerRequestContext crc) throws Exception {
+    public List<ApplicationAction> getNewActions(@QueryParam("is_done") Boolean done,
+                                                 @QueryParam("order_by") String orderBy,
+                                                 @QueryParam("order_type") String orderType,
+                                                 @QueryParam("limit") int limit,
+                                                 @Context ContainerRequestContext crc) throws Exception {
         Application application = (Application) crc.getProperty("application");
         if (application == null) {
             throw new Exception("APP_ID not passed in header, or invalid");
         }
-        return applicationActionDAO.getNewActions(application);
+        return applicationActionDAO.getActions(application, done, orderBy, orderType, limit);
     }
 
     @POST

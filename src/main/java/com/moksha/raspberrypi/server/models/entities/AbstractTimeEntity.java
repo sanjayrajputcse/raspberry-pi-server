@@ -15,11 +15,9 @@ import java.sql.Timestamp;
 @MappedSuperclass
 public abstract class AbstractTimeEntity {
 
-    @JsonIgnore
     @Column(name = "created_on", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdOn;
 
-    @JsonIgnore
     @Column(name = "updated_on", columnDefinition = "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", insertable = false, updatable = false)
     private Timestamp updatedOn;
 
