@@ -5,6 +5,7 @@ import com.moksha.raspberrypi.server.fkService.SearchService;
 import com.moksha.raspberrypi.server.models.entities.CollectionRequest;
 import com.moksha.raspberrypi.server.models.entities.CollectionResponse;
 import com.moksha.raspberrypi.server.models.entities.Product;
+import lombok.Data;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 /**
  * Created by somil.jain on 31/05/19.
  */
+@Data
 public class GetFKDetails implements Action {
 
     @Override

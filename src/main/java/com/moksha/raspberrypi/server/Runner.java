@@ -19,20 +19,22 @@ public class Runner {
     public static void main(
             String[] args) throws IOException {
         SearchService callSearch = new SearchService();
-        final List<Product> cap = callSearch.searchOnAKeyword("cap");
+        GetFKDetails getFKDetails = new GetFKDetails();
+        final List<Product> cap = getFKDetails.searchKeyWordsAndReturnProducts("cap");
         CollectionService collectionService = new CollectionService();
         List<String> toAddListingIds = new ArrayList<String>();
         List<String> toRemoveListingIds = new ArrayList<String>();
-        toAddListingIds.add("TSHEZU8KMSXHVAJE");
-//        CollectionRequest collectionRequest = new CollectionRequest("HACK", toAddListingIds, toRemoveListingIds);
-//        CollectionResponse newCollection = collectionService.createNewCollection(collectionRequest);
-//        System.out.printf("\n collectionid : "+newCollection.getCollectionId());
-//        System.out.printf("\n collectionURL: "+newCollection.getCollectionUrl());
+        toAddListingIds.add(cap.get(0).getListingId());
+        CollectionRequest collectionRequest = new CollectionRequest("HACK", toAddListingIds, toRemoveListingIds);
+        CollectionResponse newCollection = getFKDetails.createCollection(collectionRequest);
+        System.out.printf("\n collectionid : "+newCollection.getCollectionId());
+        System.out.printf("\n collectionURL: "+newCollection.getCollectionUrl());
+
         String collectionId = "h2pg3ulcx0";
         CollectionRequest collectionRequestUpdate = new CollectionRequest(toAddListingIds, toRemoveListingIds);
-        boolean updated = collectionService.updateCollection(collectionRequestUpdate, collectionId);
+        boolean updated = getFKDetails.updateCollection(collectionRequestUpdate, collectionId);
         System.out.println("updated " + updated);
-        Action getFKDetails = new GetFKDetails();
+
         System.out.println(getFKDetails.getCollectionUrl(collectionId));
     }
 }
