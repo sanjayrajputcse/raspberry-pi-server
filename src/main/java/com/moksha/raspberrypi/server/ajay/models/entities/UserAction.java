@@ -36,6 +36,9 @@ public class UserAction extends AbstractTimeEntity {
     @Column(name = "action_value")
     private String actionValue;
 
+    @Column(name = "list_id")
+    private String listId;
+
     @Column(name = "talk_back_text")
     private String talkBackText;
 }
