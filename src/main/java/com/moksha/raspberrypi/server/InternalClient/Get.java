@@ -1,5 +1,7 @@
 package com.moksha.raspberrypi.server.InternalClient;
 
+import com.moksha.raspberrypi.server.models.entities.CollectionRequest;
+import com.moksha.raspberrypi.server.models.entities.CollectionResponse;
 import com.moksha.raspberrypi.server.models.entities.Product;
 
 import java.io.IOException;
@@ -11,5 +13,7 @@ import java.util.List;
 public interface Get {
 
     public List<Product> searchKeyWordsAndReturnProducts(String word) throws IOException;
+    public CollectionResponse createCollection(CollectionRequest collectionRequest);
+
 
 }

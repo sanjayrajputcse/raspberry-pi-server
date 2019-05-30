@@ -1,4 +1,4 @@
-package com.moksha.raspberrypi.server;
+package com.moksha.raspberrypi.server.fkService;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,13 +15,13 @@ import java.util.List;
 /**
  * Created by somil.jain on 30/05/19.
  */
-public class CallSearch {
+public class SearchService {
 
     String HOST = "http://10.47.1.159:25290";
     String API ="/sherlock/stores/all/products?geoBrowse=enabled&groupingImpl=siblings&includeBuyability=true&products.count=5&products.type=listing&select.substores=off&serviceabilityCheckEnabled=true&pincode=560102&q=";
     OkHttpClient client ;
 
-    public CallSearch() {
+    public SearchService() {
         client = new OkHttpClient();
     }
 
@@ -59,9 +59,8 @@ public class CallSearch {
         catch (NullPointerException ne)
         {
             System.out.printf("error"+ ne);
-            return listOfProduct;
         }
-        System.out.printf("bye"+ listOfProduct.size());
+        System.out.printf("list of products " + listOfProduct.size());
         return listOfProduct;
     }
 

@@ -1,5 +1,6 @@
 package com.moksha.raspberrypi.server;
 
+import com.moksha.raspberrypi.server.fkService.SearchService;
 import com.moksha.raspberrypi.server.models.entities.Product;
 
 import java.io.IOException;
@@ -11,7 +12,7 @@ import java.util.List;
 public class Runner {
     public static void main(
             String[] args) throws IOException {
-        CallSearch callSearch = new CallSearch();
+        SearchService callSearch = new SearchService();
         final List<Product> cap = callSearch.searchOnAKeyword("cap");
     }
 }
