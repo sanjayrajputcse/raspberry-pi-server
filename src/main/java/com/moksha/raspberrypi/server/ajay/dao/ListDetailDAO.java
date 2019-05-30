@@ -2,7 +2,7 @@ package com.moksha.raspberrypi.server.ajay.dao;
 
 import com.google.inject.Inject;
 
-import com.moksha.raspberry.server.models.entities.ajay.ListDetail;
+import com.moksha.raspberrypi.server.ajay.models.entities.ListDetail;
 import com.moksha.raspberrypi.server.dao.HDao;
 
 import org.hibernate.SessionFactory;
