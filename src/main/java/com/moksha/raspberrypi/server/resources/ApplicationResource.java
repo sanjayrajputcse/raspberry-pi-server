@@ -66,6 +66,20 @@ public class ApplicationResource {
         return applicationActionDAO.create(applicationAction);
     }
 
+    @POST
+    @UnitOfWork
+    @Path("/actions/add")
+    public ApplicationAction doAction(ApplicationAction applicationAction,
+                                          @Context ContainerRequestContext crc) throws Exception {
+        Application application = (Application) crc.getProperty("application");
+        if (application == null) {
+            throw new Exception("APP_ID not passed in header, or invalid");
+        }
+        applicationAction.setApplication(application);
+        applicationAction.setStatus("ADDED");
+        return applicationActionDAO.create(applicationAction);
+    }
+
     @PUT
     @UnitOfWork
     @Path("/actions/{id}/start")
