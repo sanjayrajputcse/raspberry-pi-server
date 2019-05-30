@@ -5,16 +5,13 @@ import com.google.inject.Inject;
 import com.moksha.raspberrypi.server.ajay.dao.ListDetailDAO;
 import com.moksha.raspberrypi.server.ajay.dao.UserActionDAO;
 import com.moksha.raspberrypi.server.ajay.models.entities.Action;
-import com.moksha.raspberrypi.server.ajay.models.entities.ActionRequest;
 import com.moksha.raspberrypi.server.ajay.models.entities.ListDetail;
 import com.moksha.raspberrypi.server.ajay.models.entities.UserAction;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -38,94 +35,57 @@ public class GAppResource {
     @Inject
     private UserActionDAO userActionDAO;
 
-
     @GET
     @UnitOfWork
-    @Path("/actions/create")
-    public long doAction(ActionRequest actionRequest,
-                                     @Context ContainerRequestContext crc) throws Exception {
+    @Path("/doAction")
+    public long doAction(@QueryParam("fk_account_id") String fkAccountId,
+                         @QueryParam("action_name") String actionName,
+                         @QueryParam("action_value") String actionValue,
+                         @QueryParam("list_id") String listId,
+                         @Context ContainerRequestContext crc) throws Exception {
+
+        if (Action.getActionFromString(actionName) == Action.INVALID)
+            return -1;
+
         UserAction userAction = new UserAction();
-        userAction.setFkAccountId(actionRequest.getFkAccountId());
-        userAction.setListId(actionRequest.getListName());
-        userAction.setActionName(actionRequest.getActionName());
-        userAction.setActionValue(actionRequest.getActionValue());
-
-        switch (Action.getActionFromString(actionRequest.getActionName())) {
-            case CREATE_LIST:
-                userActionDAO.create(userAction);
-                break;
-            case REMOVE_LIST:
-                userActionDAO.delete(userAction);
-                break;
-            case ADD_ITEM_TO_LIST:
-            case REMOVE_ITEM_FROM_LIST:
-                userActionDAO.update(userAction);
-                break;
-        }
-        UserAction userAction1 = userActionDAO.create(userAction);
-
-        return userAction1.getId();
+        userAction.setFkAccountId(fkAccountId);
+        userAction.setActionName(actionName);
+        userAction.setActionValue(actionValue);
+        userAction.setListId(listId);
+        return userActionDAO.create(userAction).getId();
     }
 
     @GET
     @UnitOfWork
-    @Path("/lists")
-    public List<ListDetail> getList(@QueryParam("list_id") String listId, @QueryParam("fk_account_id") String fkAccountId,
-                                    @Context ContainerRequestContext crc) throws Exception {
+    @Path("/showLists")
+    public List<ListDetail> showLists(@QueryParam("fk_account_id") String fkAccountId,
+                                      @Context ContainerRequestContext crc) throws Exception {
 
-        if (listId == null) {
-            // send list of list names
-            return listDetailDAO.getAll(fkAccountId);
-        } else {
-            ListDetail listDetail = listDetailDAO.get(listId);
-            return Arrays.asList(listDetail);
-        }
+        return listDetailDAO.getAll(fkAccountId);
     }
 
     @GET
     @UnitOfWork
-    @Path("/sendlists/")
-    public int sendList(@QueryParam("list_id") String listId, @QueryParam("fk_account_id") String fkAccountId,
-                        @Context ContainerRequestContext crc) throws Exception {
+    @Path("/sendListToPN/")
+    public long sendListToPN(@QueryParam("list_id") String listId, @QueryParam("fk_account_id") String fkAccountId,
+                             @Context ContainerRequestContext crc) throws Exception {
 
-        if (listId == null) {
-            // send list of list names
-            List<ListDetail> all = listDetailDAO.getAll(fkAccountId);
-            if (all == null || all.size() == 0) {
-                return -1;
-            }
-            if (all.size() == 1) {
-                sendListUserAction(all.get(0).getListId(), fkAccountId);
-                return 1;
-            }
-            return -2;
-
-        } else {
-            ListDetail listDetail = listDetailDAO.get(listId);
-            if (listDetail == null) {
-                return -1;
-            }
-            sendListUserAction(listId, fkAccountId);
-            return -2;
-        }
-    }
-
-    private long sendListUserAction(String listId, String fkAccountId) {
         UserAction sendListToDeviceUserAction = new UserAction();
-        sendListToDeviceUserAction.setActionName(Action.SEND_LIST.getValue());
-        sendListToDeviceUserAction.setListId(listId);
         sendListToDeviceUserAction.setFkAccountId(fkAccountId);
+        sendListToDeviceUserAction.setActionName(Action.SEND_LIST_TO_PN.getValue());
+        sendListToDeviceUserAction.setListId(listId);
 
         return userActionDAO.create(sendListToDeviceUserAction).getId();
+
     }
 
     @GET
     @UnitOfWork
-    @Path("/isDone/")
-    public boolean sendList(@QueryParam("action_id") String action_id,
-                            @Context ContainerRequestContext crc) throws Exception {
+    @Path("/isDone")
+    public boolean isDone(@QueryParam("action_id") String actionId,
+                          @Context ContainerRequestContext crc) throws Exception {
 
-        UserAction userAction = userActionDAO.get(action_id);
+        UserAction userAction = userActionDAO.get(actionId);
         return userAction.isDone();
     }
 }
