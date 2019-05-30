@@ -31,6 +31,8 @@ public class SearchService {
 //        System.out.println(url);
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader("X-MARKETPLACE-CONTEXT","GROCERY")
+                .addHeader("X-SERVICEABLE-MARKETPLACES" ,"FLIPKART,GROCERY")
                 .build();
         String responseBody = null;
         try (Response response = client.newCall(request).execute()) {
