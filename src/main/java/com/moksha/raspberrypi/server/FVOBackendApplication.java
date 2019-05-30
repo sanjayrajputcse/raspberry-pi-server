@@ -56,9 +56,25 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
         //app healthchecks
         environment.healthChecks().register("healthCheck", new AppHealthCheck());
 
+        while(true){
+            // fetch actions from fvo thin server
+            // createList, addItem, removeItem, deleteList, sendListToDevice
 
+            //createList
+            //1. call collection service to create a page
+            //2. create an entry in MaterializedCollections
 
+            //addItem
+            //1. search for fsn
+            //2. add fsn to page using collection service
+            //3. add an entry in MaterializedFsn.
 
-        System.out.println("stop");
+            // push result to fvo thin server
+            // addItem: FSN desc
+            // createList/removeItem/deleteList/removeItem/sendListToDevice: successful/error
+
+            // sleeping to avoid thrashing
+            Thread.sleep(500);
+        }
     }
 }
