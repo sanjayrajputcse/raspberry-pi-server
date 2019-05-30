@@ -1,4 +1,4 @@
-application: Raspberry-Pi-Server
+application: FVO-Backend-Server
 
 server:
   #adminMinThreads: 1
@@ -19,9 +19,9 @@ server:
   requestLog:
      appenders:
        - type: file
-         currentLogFilename: /var/log/moksha/raspberry-pi-server/requests.log
+         currentLogFilename: /var/log/fvo/fvo-backend-server/requests.log
          archive: true
-         archivedLogFilenamePattern: /var/log/moksha/raspberry-pi-server/requests-%d{yyyy-MM-dd}.log
+         archivedLogFilenamePattern: /var/log/fvo/fvo-backend-server/requests-%d{yyyy-MM-dd}.log
          archivedFileCount: 50
 
 logging:
@@ -33,20 +33,20 @@ logging:
         threshold: ALL
         timeZone: IST
         logFormat: "%date %level [%thread] %logger{10} [%X{id}] %msg%n"
-        currentLogFilename: /var/log/moksha/raspberry-pi-server/server.log
+        currentLogFilename: /var/log/fvo/fvo-backend-server/server.log
         archive: true
-        archivedLogFilenamePattern: /var/log/moksha/raspberry-pi-server/server-%d{yyyy-MM-dd}.log
+        archivedLogFilenamePattern: /var/log/fvo/fvo-backend-server/server-%d{yyyy-MM-dd}.log
         archivedFileCount: 20
 
 database:
   # the name of your JDBCdriver
   driverClass: com.mysql.jdbc.Driver
   # the username
-  user: pi
+  user: root
   # the password
-  password: raspberry
+  password:
   # the JDBC URL
-  url: jdbc:mysql://127.0.0.1:3306/raspberry
+  url: jdbc:mysql://127.0.0.1:3306/fvo_backend
   # any properties specific to your JDBC driver:
   properties:
    charSet: UTF-8

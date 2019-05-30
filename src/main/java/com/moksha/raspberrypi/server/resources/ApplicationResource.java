@@ -1,18 +1,28 @@
 package com.moksha.raspberrypi.server.resources;
 
 import com.google.inject.Inject;
+
 import com.moksha.raspberrypi.server.dao.ApplicationActionDAO;
 import com.moksha.raspberrypi.server.dao.ApplicationDAO;
 import com.moksha.raspberrypi.server.models.entities.Application;
 import com.moksha.raspberrypi.server.models.entities.ApplicationAction;
 import com.moksha.raspberrypi.server.utils.TimeUtil;
-import io.dropwizard.hibernate.UnitOfWork;
 
-import javax.ws.rs.*;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
+
+import io.dropwizard.hibernate.UnitOfWork;
 
 @Path("/v0/applications")
 @Produces(MediaType.APPLICATION_JSON)
@@ -54,7 +64,7 @@ public class ApplicationResource {
 
     @POST
     @UnitOfWork
-    @Path("/actions/add")
+    @Path("/actions/create")
     public ApplicationAction createAction(ApplicationAction applicationAction,
                                        @Context ContainerRequestContext crc) throws Exception {
         Application application = (Application) crc.getProperty("application");
