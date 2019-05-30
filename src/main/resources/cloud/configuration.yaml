@@ -42,16 +42,16 @@ database:
   # the name of your JDBCdriver
   driverClass: com.mysql.jdbc.Driver
   # the username
-  user: pi
+  user: root
   # the password
-  password: raspberry
+  password:
   # the JDBC URL
-  url: jdbc:mysql://localhost:3306/raspberry
+  url: jdbc:mysql://35.231.5.148:3306/fvo
   # any properties specific to your JDBC driver:
   properties:
    charSet: UTF-8
    hibernate.show_sql: true
-   hibernate.hbm2ddl.auto: update
+   hibernate.hbm2ddl.auto: validate
    hibernate.session.events.log: false
   # the maximum amount of time to wait on an empty pool before throwing an exception
   maxWaitForConnection: 60s
