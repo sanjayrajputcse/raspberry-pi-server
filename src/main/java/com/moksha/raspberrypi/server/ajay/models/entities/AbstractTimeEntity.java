@@ -1,4 +1,4 @@
-package com.moksha.raspberry.server.models.entities.ajay;
+package com.moksha.raspberrypi.server.ajay.models.entities;
 
 import java.sql.Timestamp;
 
