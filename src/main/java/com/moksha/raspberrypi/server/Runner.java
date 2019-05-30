@@ -24,8 +24,8 @@ public class Runner {
         toAddListingIds.add("TSHEZU8KMSXHVAJE");
         CollectionRequest collectionRequest = new CollectionRequest("HACK", toAddListingIds, toRemoveListingIds);
         CollectionResponse newCollection = collectionService.createNewCollection(collectionRequest);
-        System.out.printf("collectionid"+newCollection.getCollectionId());
-        System.out.printf("collectionURL"+newCollection.getCollectionId());
+        System.out.printf("\n collectionid : "+newCollection.getCollectionId());
+        System.out.printf("\n collectionURL: "+newCollection.getCollectionUrl());
 
     }
 }

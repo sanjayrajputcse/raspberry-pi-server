@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moksha.raspberrypi.server.models.entities.CollectionRequest;
 import com.moksha.raspberrypi.server.models.entities.CollectionResponse;
+import com.mysql.jdbc.StringUtils;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -18,32 +19,59 @@ public class CollectionService {
     String METHOD_POST = "POST";
     String HOST = "http://10.47.7.31";
     String CREATE_API = "/collection-service/v0/collection";
+    String SUBMIT_API = "/collection-service/v0/collection/submit/";
 
-    OkHttpClient client ;
+    OkHttpClient client;
     ObjectMapper objectMapper;
 
-    public CollectionService() {
+    public CollectionService() throws IOException {
 
         client = new OkHttpClient();
         objectMapper = new ObjectMapper();
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
+
     public CollectionResponse createNewCollection(CollectionRequest collectionRequest) throws IOException {
 
         String url = HOST + CREATE_API;
         String request = objectMapper.writeValueAsString(collectionRequest);
-        String response = post(url, request);
-        return objectMapper.readValue(response,CollectionResponse.class);
+        String collectionId =null;
+        CollectionResponse collectionResponse = new CollectionResponse();
+        try {
+            String response = post(url, request);
+            collectionResponse = objectMapper.readValue(response, CollectionResponse.class);
+            collectionId = collectionResponse.getCollectionId();
+            submitCollection(collectionId);
+            System.out.println(""+submitCollection(collectionId));
+        } catch (Exception e) {
+            System.out.printf("Unable to create COLLECTION");
+        }
+        return collectionResponse;
     }
 
-    String post(String url, String json) throws IOException {
+
+    private boolean submitCollection(String collectionId) {
+        boolean submitted = false;
+        if(!StringUtils.isNullOrEmpty(collectionId)) {
+            String url = HOST + SUBMIT_API + collectionId;
+            String request = "{}";
+            try {
+                submitted = put(url, request);
+            } catch (Exception e) {
+                System.out.printf("Unable to submit COLLECTION with id " + collectionId);
+            }
+        }
+        return submitted;
+    }
+
+    private String post(String url, String json) throws IOException {
         final MediaType JSON = MediaType.get("application/json; charset=utf-8");
         RequestBody body = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader("X_TEAM_ID","LBHAV2UYG8")
-                .addHeader("X_USER_ID","pushkar.anand@flipkart.com")
+                .addHeader("X_TEAM_ID", "LBHAV2UYG8")
+                .addHeader("X_USER_ID", "pushkar.anand@flipkart.com")
                 .post(body)
                 .build();
         try (Response response = client.newCall(request).execute()) {
@@ -52,5 +80,24 @@ public class CollectionService {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private boolean put(String url, String jsonBody) {
+
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        RequestBody body = RequestBody.create(JSON, jsonBody);
+        Request request = new Request.Builder()
+                .url(url)
+                .put(body) //PUT
+                .addHeader("X_TEAM_ID", "LBHAV2UYG8")
+                .addHeader("X_USER_ID", "pushkar.anand@flipkart.com")
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            return response.isSuccessful();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
