@@ -2,13 +2,22 @@ package com.moksha.raspberrypi.server;
 
 import com.google.inject.Guice;
 
+import com.moksha.raspberrypi.server.InternalClient.GetFKDetails;
+import com.moksha.raspberrypi.server.ajay.models.entities.Action;
+import com.moksha.raspberrypi.server.ajay.models.entities.UserAction;
 import com.moksha.raspberrypi.server.dao.GuiceInjector;
 import com.moksha.raspberrypi.server.filters.RequestFilter;
+import com.moksha.raspberrypi.server.fkService.GCPConnectService;
+import com.moksha.raspberrypi.server.fkService.SearchService;
 import com.moksha.raspberrypi.server.models.entities.fvo.backend.MaterializedCollection;
 import com.moksha.raspberrypi.server.models.entities.fvo.backend.MaterializedFSN;
 import com.moksha.raspberrypi.server.resources.AppHealthCheck;
 import com.moksha.raspberrypi.server.resources.ApplicationResource;
 import com.moksha.raspberrypi.server.resources.DeviceResource;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
@@ -16,6 +25,10 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
 public class FVOBackendApplication extends io.dropwizard.Application<RPiConfiguration> {
+
+    GCPConnectService gcpConnectService = new GCPConnectService();
+    SearchService callSearch = new SearchService();
+    GetFKDetails getFKDetails = new GetFKDetails();
 
     public static void main(String[] args) throws Exception {
         new FVOBackendApplication().run(args);
@@ -60,6 +73,22 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
             // fetch actions from fvo thin server
             // createList, addItem, removeItem, deleteList, sendListToDevice
 
+            final List<UserAction> allPendingUserActions = gcpConnectService.getAllPendingUserActions();
+
+            final List<UserAction> allCompletedUserActions = new ArrayList<>();
+
+            allPendingUserActions.stream().forEachOrdered(userAction -> {
+                final UserAction processedUserAction = processUserAction(userAction);
+                if(processedUserAction.isDone()){
+                    try {
+                        gcpConnectService.setStatusAndDesc(processedUserAction.getId(), processedUserAction.getTalkBackText());
+                        allCompletedUserActions.add(processedUserAction);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
             //createList
             //1. call collection service to create a page
             //2. create an entry in MaterializedCollections
@@ -76,5 +105,26 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
             // sleeping to avoid thrashing
             Thread.sleep(500);
         }
+    }
+
+    private UserAction processUserAction(UserAction userAction) {
+        final String actionNameString = userAction.getActionName();
+        final Action action = Action.getActionFromString(actionNameString);
+        switch (action){
+            case CREATE_LIST:
+                final String listId = userAction.getListId();
+                final String fkAccountId = userAction.getFkAccountId();
+                break;
+            case REMOVE_LIST:
+                break;
+            case ADD_ITEM_TO_LIST:
+                break;
+            case REMOVE_ITEM_FROM_LIST:
+                break;
+            case SEND_LIST_TO_PN:
+                break;
+
+        }
+        return userAction;
     }
 }

@@ -3,9 +3,11 @@ package com.moksha.raspberrypi.server.ajay.resources;
 import com.google.inject.Inject;
 
 import com.moksha.raspberrypi.server.ajay.dao.ListDetailDAO;
+import com.moksha.raspberrypi.server.ajay.dao.UserAccountDAO;
 import com.moksha.raspberrypi.server.ajay.dao.UserActionDAO;
 import com.moksha.raspberrypi.server.ajay.models.entities.Action;
 import com.moksha.raspberrypi.server.ajay.models.entities.ListDetail;
+import com.moksha.raspberrypi.server.ajay.models.entities.UserAccount;
 import com.moksha.raspberrypi.server.ajay.models.entities.UserAction;
 
 import java.util.List;
@@ -35,6 +37,9 @@ public class GAppResource {
     @Inject
     private UserActionDAO userActionDAO;
 
+    @Inject
+    private UserAccountDAO userAccountDAO;
+
     @GET
     @UnitOfWork
     @Path("/doAction")
@@ -54,6 +59,15 @@ public class GAppResource {
         userAction.setListId(listId);
         return userActionDAO.create(userAction).getId();
     }
+
+    /*@GET
+    @UnitOfWork
+    @Path("/showLists")
+    public long showLists(@QueryParam("fk_account_id") String fkAccountId,
+                                      @Context ContainerRequestContext crc) throws Exception {
+
+        return listDetailDAO.getAll(fkAccountId);
+    }*/
 
     @GET
     @UnitOfWork
@@ -82,10 +96,39 @@ public class GAppResource {
     @GET
     @UnitOfWork
     @Path("/isDone")
-    public boolean isDone(@QueryParam("action_id") String actionId,
+    public boolean isDone(@QueryParam("action_id") long actionId,
                           @Context ContainerRequestContext crc) throws Exception {
 
         UserAction userAction = userActionDAO.get(actionId);
         return userAction.isDone();
     }
+
+    @GET
+    @UnitOfWork
+    @Path("/getUserAccountId")
+    public UserAccount getUserAccount() throws Exception {
+        return userAccountDAO.getUserAccount();
+    }
+
+
+    /*
+    @GET
+    @UnitOfWork
+    @Path("/getPendingTasks")
+    public boolean getPendingTasks(@Context ContainerRequestContext crc) throws Exception {
+
+        UserAction userAction = userActionDAO.get(actionId);
+        return userAction.isDone();
+    }
+
+    @GET
+    @UnitOfWork
+    @Path("/getPendingTasks")
+    public boolean updateTaskStatus(@QueryParam("action_id") long actionId,
+                                    @Context ContainerRequestContext crc) throws Exception {
+
+        UserAction userAction = userActionDAO.get(actionId);
+        return userAction.isDone();
+    }*/
+
 }

@@ -1,20 +1,19 @@
 package com.moksha.raspberrypi.server;
 
-import com.google.common.collect.ImmutableList;
 import com.google.inject.Guice;
+
+import com.moksha.raspberrypi.server.ajay.models.entities.ListDetail;
+import com.moksha.raspberrypi.server.ajay.models.entities.UserAccount;
+import com.moksha.raspberrypi.server.ajay.models.entities.UserAction;
+import com.moksha.raspberrypi.server.ajay.resources.GAppResource;
 import com.moksha.raspberrypi.server.dao.GuiceInjector;
 import com.moksha.raspberrypi.server.filters.RequestFilter;
-import com.moksha.raspberrypi.server.models.entities.*;
 import com.moksha.raspberrypi.server.resources.AppHealthCheck;
-import com.moksha.raspberrypi.server.resources.ApplicationResource;
-import com.moksha.raspberrypi.server.resources.DeviceResource;
+
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.hibernate.HibernateBundle;
-import io.dropwizard.hibernate.SessionFactoryFactory;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
-
-import javax.persistence.Entity;
 
 public class RPiApplication extends io.dropwizard.Application<RPiConfiguration> {
 
@@ -27,9 +26,10 @@ public class RPiApplication extends io.dropwizard.Application<RPiConfiguration> 
         return "Raspberry Pi Server";
     }
 
-    private final HibernateBundle<RPiConfiguration> hibernate = new HibernateBundle<RPiConfiguration>(Device.class, Unit.class,
-            Sensor.class, DeviceSensor.class, Specification.class, DeviceSpecification.class, SensorPin.class,
-            Application.class, ApplicationAction.class) {
+    private final HibernateBundle<RPiConfiguration> hibernate = new HibernateBundle<RPiConfiguration>(
+            UserAction.class,
+            ListDetail.class,
+            UserAccount.class) {
         @Override
         public DataSourceFactory getDataSourceFactory(RPiConfiguration piConfiguration) {
             return piConfiguration.getDatabase();
@@ -49,8 +49,7 @@ public class RPiApplication extends io.dropwizard.Application<RPiConfiguration> 
         environment.jersey().register(GuiceInjector.getInjector().getInstance(RequestFilter.class));
 
         //app resources
-        environment.jersey().register(GuiceInjector.getInjector().getInstance(DeviceResource.class));
-        environment.jersey().register(GuiceInjector.getInjector().getInstance(ApplicationResource.class));
+        environment.jersey().register(GuiceInjector.getInjector().getInstance(GAppResource.class));
 
         //app manage resources
         environment.lifecycle().manage(new RPiManage());
