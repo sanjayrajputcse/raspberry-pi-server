@@ -2,7 +2,7 @@ package com.moksha.raspberrypi.server;
 
 import com.google.inject.Guice;
 
-import com.moksha.raspberrypi.server.InternalClient.GetFKDetails;
+import com.moksha.raspberrypi.server.InternalClient.FkAction;
 import com.moksha.raspberrypi.server.ajay.models.entities.Action;
 import com.moksha.raspberrypi.server.ajay.models.entities.UserAction;
 import com.moksha.raspberrypi.server.dao.GuiceInjector;
@@ -28,7 +28,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
 
     GCPConnectService gcpConnectService = new GCPConnectService();
     SearchService callSearch = new SearchService();
-    GetFKDetails getFKDetails = new GetFKDetails();
+    FkAction getFKDetails = new FkAction();
 
     public static void main(String[] args) throws Exception {
         new FVOBackendApplication().run(args);

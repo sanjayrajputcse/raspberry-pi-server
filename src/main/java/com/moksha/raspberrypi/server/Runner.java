@@ -1,10 +1,7 @@
 package com.moksha.raspberrypi.server;
 
-import com.moksha.raspberrypi.server.InternalClient.Action;
-import com.moksha.raspberrypi.server.InternalClient.GetFKDetails;
-import com.moksha.raspberrypi.server.fkService.CollectionService;
+import com.moksha.raspberrypi.server.InternalClient.FkAction;
 import com.moksha.raspberrypi.server.fkService.ProductDetailService;
-import com.moksha.raspberrypi.server.fkService.SearchService;
 import com.moksha.raspberrypi.server.models.entities.CollectionRequest;
 import com.moksha.raspberrypi.server.models.entities.CollectionResponse;
 import com.moksha.raspberrypi.server.models.entities.Product;
@@ -19,7 +16,7 @@ import java.util.List;
 public class Runner {
     public static void main(
             String[] args) throws IOException {
-        GetFKDetails getFKDetails = new GetFKDetails();
+        FkAction getFKDetails = new FkAction();
         final List<Product> cap = getFKDetails.searchKeyWordsAndReturnProducts("cap");
         List<String> toAddListingIds = new ArrayList<String>();
         List<String> toRemoveListingIds = new ArrayList<String>();
