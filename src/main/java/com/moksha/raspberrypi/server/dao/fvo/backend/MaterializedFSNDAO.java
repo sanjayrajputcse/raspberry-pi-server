@@ -37,4 +37,23 @@ public class MaterializedFSNDAO extends HDao<MaterializedFSN> {
         }
         return null;
     }
+
+    public MaterializedFSN getMaterializedFSNUsingFSNID(String fkAccountId, String listName, String fsnId) {
+        Criteria criteria = this.currentSession().createCriteria(MaterializedFSN.class);
+        criteria.add(Restrictions.eq("fkAccountId", fkAccountId));
+        criteria.add(Restrictions.eq("listName", listName));
+        criteria.add(Restrictions.eq("fsnId", fsnId));
+        final List list = criteria.list();
+        if(list != null && list.size()>0){
+            return (MaterializedFSN) list.get(0);
+        }
+        return null;
+    }
+
+    public List<MaterializedFSN> getMaterializedFSNListItemSearch(String fkAccountId, String listItem) {
+        Criteria criteria = this.currentSession().createCriteria(MaterializedFSN.class);
+        criteria.add(Restrictions.eq("fkAccountId", fkAccountId));
+        criteria.add(Restrictions.like("fsnName", "%" + listItem + "%"));
+        return criteria.list();
+    }
 }
