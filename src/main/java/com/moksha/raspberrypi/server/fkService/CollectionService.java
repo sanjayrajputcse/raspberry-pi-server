@@ -20,6 +20,7 @@ public class CollectionService {
     String HOST = "http://10.47.7.31";
     String CREATE_API = "/collection-service/v0/collection";
     String SUBMIT_API = "/collection-service/v0/collection/submit/";
+    String UPDATE_API = "/collection-service/v0/collection/large-adhoc/";
 
     OkHttpClient client;
     ObjectMapper objectMapper;
@@ -48,6 +49,25 @@ public class CollectionService {
             System.out.printf("Unable to create COLLECTION");
         }
         return collectionResponse;
+    }
+
+    public boolean updateCollection(CollectionRequest collectionRequest) throws IOException
+    {
+        boolean updated =false;
+        if(collectionRequest.getCollection_id() == null)
+        {
+            return false;
+        }
+        String url = HOST + UPDATE_API + collectionRequest.getCollection_id();
+        String request = objectMapper.writeValueAsString(collectionRequest);
+        try {
+            updated = put(url, request);
+            submitCollection(collectionRequest.getCollection_id());
+            System.out.println(""+submitCollection(collectionRequest.getCollection_id()));
+        } catch (Exception e) {
+            System.out.printf("Unable to update COLLECTION "+ updated);
+        }
+        return updated;
     }
 
 
@@ -94,6 +114,7 @@ public class CollectionService {
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
+            System.out.println("code"+ response.code() );
             return response.isSuccessful();
         } catch (IOException e) {
             e.printStackTrace();

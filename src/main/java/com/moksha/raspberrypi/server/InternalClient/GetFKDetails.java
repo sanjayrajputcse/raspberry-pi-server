@@ -21,9 +21,16 @@ public class GetFKDetails implements Get{
         return callSearch.searchOnAKeyword(word);
     }
 
+    @Override
     public CollectionResponse createCollection(CollectionRequest collectionRequest) throws IOException {
 
         CollectionService collectionService = new CollectionService();
         return collectionService.createNewCollection(collectionRequest);
+    }
+
+    @Override
+    public boolean updateCollection(CollectionRequest collectionRequest) throws IOException {
+        CollectionService collectionService = new CollectionService();
+        return collectionService.updateCollection(collectionRequest);
     }
 }

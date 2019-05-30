@@ -14,6 +14,6 @@ public interface Get {
 
     public List<Product> searchKeyWordsAndReturnProducts(String word) throws IOException;
     public CollectionResponse createCollection(CollectionRequest collectionRequest) throws IOException;
-
+    public boolean updateCollection(CollectionRequest collectionRequest) throws IOException;
 
 }
