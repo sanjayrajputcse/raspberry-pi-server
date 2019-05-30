@@ -1,6 +1,8 @@
 package com.moksha.raspberrypi.server.models.entities;
 
 
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.List;
 /**
  * Created by somil.jain on 31/05/19.
  */
+@Data
 public class CollectionRequest {
 
     String collection_name;

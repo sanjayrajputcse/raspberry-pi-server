@@ -21,7 +21,7 @@ public class GetFKDetails implements Get{
         return callSearch.searchOnAKeyword(word);
     }
 
-    public CollectionResponse createCollection(CollectionRequest collectionRequest){
+    public CollectionResponse createCollection(CollectionRequest collectionRequest) throws IOException {
 
         CollectionService collectionService = new CollectionService();
         return collectionService.createNewCollection(collectionRequest);

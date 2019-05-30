@@ -1,16 +1,19 @@
 package com.moksha.raspberrypi.server.models.entities;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
 /**
  * Created by somil.jain on 31/05/19.
  */
+@Data
 public class CollectionResponse {
 
-    Collection collectionList;
+    @JsonProperty("collection_id")
+    String collectionId;
+    @JsonProperty("collection_url")
+    String collectionUrl;
 
-    public CollectionResponse(Collection collectionList) {
-        this.collectionList = collectionList;
-    }
+
 
 }

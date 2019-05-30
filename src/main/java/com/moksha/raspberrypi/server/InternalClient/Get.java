@@ -13,7 +13,7 @@ import java.util.List;
 public interface Get {
 
     public List<Product> searchKeyWordsAndReturnProducts(String word) throws IOException;
-    public CollectionResponse createCollection(CollectionRequest collectionRequest);
+    public CollectionResponse createCollection(CollectionRequest collectionRequest) throws IOException;
 
 
 }
