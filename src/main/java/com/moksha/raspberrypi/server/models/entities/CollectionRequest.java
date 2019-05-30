@@ -1,13 +1,10 @@
 package com.moksha.raspberrypi.server.models.entities;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
-import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,7 +21,7 @@ public class CollectionRequest {
     String collection_end_date;
     String collection_entity_type;
     String store_id;
-    List <String> listingIds;
+    List <String> added_products;
     List <String> removed_products;
 
     public CollectionRequest(String collectionName,
@@ -37,7 +34,7 @@ public class CollectionRequest {
         this.collection_end_date = "2019-06-03T18:29:59.000Z";
         this.collection_entity_type = "LISTING";
         this.store_id = "all";
-        this.listingIds =listingIdsToAdd;
+        this.added_products =listingIdsToAdd;
         this.removed_products = listingIdsToRemove;
     }
 
@@ -45,7 +42,7 @@ public class CollectionRequest {
                               List<String> listingIdsToRemove)
     {
         this.store_id = "all";
-        this.listingIds =listingIdsToAdd;
+        this.added_products =listingIdsToAdd;
         this.removed_products = listingIdsToRemove;
     }
 }

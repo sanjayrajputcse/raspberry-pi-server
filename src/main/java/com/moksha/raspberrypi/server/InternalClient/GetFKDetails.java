@@ -43,4 +43,9 @@ public class GetFKDetails implements Action {
         }
         return null;
     }
+
+    @Override
+    public boolean pushNotification() {
+        return false;
+    }
 }

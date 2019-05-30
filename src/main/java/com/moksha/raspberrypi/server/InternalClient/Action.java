@@ -16,5 +16,6 @@ public interface Action {
     public CollectionResponse createCollection(CollectionRequest collectionRequest) throws IOException;
     public boolean updateCollection(CollectionRequest collectionRequest, String collectionId) throws IOException;
     public String getCollectionUrl(String collectionId);
+    public boolean pushNotification();
 
 }
