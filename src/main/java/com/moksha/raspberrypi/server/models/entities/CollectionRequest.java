@@ -37,4 +37,12 @@ public class CollectionRequest {
         this.listingIds =listingIdsToAdd;
         this.removed_products = listingIdsToRemove;
     }
+
+    public CollectionRequest( List<String> listingIdsToAdd,
+                              List<String> listingIdsToRemove)
+    {
+        this.store_id = "all";
+        this.listingIds =listingIdsToAdd;
+        this.removed_products = listingIdsToRemove;
+    }
 }
