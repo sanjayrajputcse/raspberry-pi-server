@@ -33,4 +33,12 @@ public class GetFKDetails implements Action {
         CollectionService collectionService = new CollectionService();
         return collectionService.updateCollection(collectionRequest, collectionId);
     }
+
+    @Override
+    public String getCollectionUrl(String collectionId) {
+        if(collectionId != null) {
+            return "https://www.flipkart.com/all/~cs-" + collectionId + "/pr?sid=all";
+        }
+        return null;
+    }
 }

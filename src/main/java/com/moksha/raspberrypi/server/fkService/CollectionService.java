@@ -62,8 +62,7 @@ public class CollectionService {
         String request = objectMapper.writeValueAsString(collectionRequest);
         try {
             updated = put(url,request);
-            submitCollection(collectionId);
-            System.out.println(""+submitCollection(collectionId));
+            System.out.println("submitted"+submitCollection(collectionId));
         } catch (Exception e) {
             System.out.printf("Unable to update COLLECTION "+ updated);
         }

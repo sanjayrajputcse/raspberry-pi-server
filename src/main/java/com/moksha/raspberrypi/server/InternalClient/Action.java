@@ -15,5 +15,6 @@ public interface Action {
     public List<Product> searchKeyWordsAndReturnProducts(String word) throws IOException;
     public CollectionResponse createCollection(CollectionRequest collectionRequest) throws IOException;
     public boolean updateCollection(CollectionRequest collectionRequest, String collectionId) throws IOException;
+    public String getCollectionUrl(String collectionId);
 
 }

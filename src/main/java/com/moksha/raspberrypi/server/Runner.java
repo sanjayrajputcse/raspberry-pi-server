@@ -1,5 +1,7 @@
 package com.moksha.raspberrypi.server;
 
+import com.moksha.raspberrypi.server.InternalClient.Action;
+import com.moksha.raspberrypi.server.InternalClient.GetFKDetails;
 import com.moksha.raspberrypi.server.fkService.CollectionService;
 import com.moksha.raspberrypi.server.fkService.SearchService;
 import com.moksha.raspberrypi.server.models.entities.CollectionRequest;
@@ -22,12 +24,15 @@ public class Runner {
         List<String> toAddListingIds = new ArrayList<String>();
         List<String> toRemoveListingIds = new ArrayList<String>();
         toAddListingIds.add("TSHEZU8KMSXHVAJE");
-        CollectionRequest collectionRequest = new CollectionRequest("HACK", toAddListingIds, toRemoveListingIds);
-        CollectionResponse newCollection = collectionService.createNewCollection(collectionRequest);
-        System.out.printf("\n collectionid : "+newCollection.getCollectionId());
-        System.out.printf("\n collectionURL: "+newCollection.getCollectionUrl());
+//        CollectionRequest collectionRequest = new CollectionRequest("HACK", toAddListingIds, toRemoveListingIds);
+//        CollectionResponse newCollection = collectionService.createNewCollection(collectionRequest);
+//        System.out.printf("\n collectionid : "+newCollection.getCollectionId());
+//        System.out.printf("\n collectionURL: "+newCollection.getCollectionUrl());
+        String collectionId = "h2pg3ulcx0";
         CollectionRequest collectionRequestUpdate = new CollectionRequest(toAddListingIds, toRemoveListingIds);
-        boolean updated = collectionService.updateCollection(collectionRequestUpdate, newCollection.getCollectionId());
+        boolean updated = collectionService.updateCollection(collectionRequestUpdate, collectionId);
         System.out.println("updated " + updated);
+        Action getFKDetails = new GetFKDetails();
+        System.out.println(getFKDetails.getCollectionUrl(collectionId));
     }
 }

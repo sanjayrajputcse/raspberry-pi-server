@@ -1,6 +1,8 @@
 package com.moksha.raspberrypi.server.models.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.Setter;
 
@@ -12,12 +14,13 @@ import java.util.List;
  * Created by somil.jain on 31/05/19.
  */
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CollectionRequest {
 
     String collection_name;
     String collection_type;
     List semantic_attributes_list;
-    int minimum_members_in_collection;
+    Integer minimum_members_in_collection;
     String collection_end_date;
     String collection_entity_type;
     String store_id;
