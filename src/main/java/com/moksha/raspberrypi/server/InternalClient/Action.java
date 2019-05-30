@@ -10,10 +10,10 @@ import java.util.List;
 /**
  * Created by somil.jain on 31/05/19.
  */
-public interface Get {
+public interface Action {
 
     public List<Product> searchKeyWordsAndReturnProducts(String word) throws IOException;
     public CollectionResponse createCollection(CollectionRequest collectionRequest) throws IOException;
-    public boolean updateCollection(CollectionRequest collectionRequest) throws IOException;
+    public boolean updateCollection(CollectionRequest collectionRequest, String collectionId) throws IOException;
 
 }

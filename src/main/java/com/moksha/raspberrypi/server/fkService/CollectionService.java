@@ -51,19 +51,19 @@ public class CollectionService {
         return collectionResponse;
     }
 
-    public boolean updateCollection(CollectionRequest collectionRequest) throws IOException
+    public boolean updateCollection(CollectionRequest collectionRequest, String collectionId) throws IOException
     {
         boolean updated =false;
-        if(collectionRequest.getCollection_id() == null)
+        if(collectionId == null)
         {
             return false;
         }
-        String url = HOST + UPDATE_API + collectionRequest.getCollection_id();
+        String url = HOST + UPDATE_API + collectionId;
         String request = objectMapper.writeValueAsString(collectionRequest);
         try {
-            updated = put(url, request);
-            submitCollection(collectionRequest.getCollection_id());
-            System.out.println(""+submitCollection(collectionRequest.getCollection_id()));
+            updated = put(url,request);
+            submitCollection(collectionId);
+            System.out.println(""+submitCollection(collectionId));
         } catch (Exception e) {
             System.out.printf("Unable to update COLLECTION "+ updated);
         }

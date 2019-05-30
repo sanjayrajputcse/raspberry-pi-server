@@ -23,8 +23,6 @@ public class CollectionRequest {
     String store_id;
     List <String> listingIds;
     List <String> removed_products;
-    @Setter
-    String collection_id;
 
     public CollectionRequest(String collectionName,
                              List<String> listingIdsToAdd,

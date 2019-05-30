@@ -26,8 +26,8 @@ public class Runner {
         CollectionResponse newCollection = collectionService.createNewCollection(collectionRequest);
         System.out.printf("\n collectionid : "+newCollection.getCollectionId());
         System.out.printf("\n collectionURL: "+newCollection.getCollectionUrl());
-        collectionRequest.setCollection_id(newCollection.getCollectionId());
-        boolean updated = collectionService.updateCollection(collectionRequest);
+        CollectionRequest collectionRequestUpdate = new CollectionRequest(null, toAddListingIds, toRemoveListingIds);
+        boolean updated = collectionService.updateCollection(collectionRequestUpdate, newCollection.getCollectionId());
         System.out.println("updated " + updated);
     }
 }

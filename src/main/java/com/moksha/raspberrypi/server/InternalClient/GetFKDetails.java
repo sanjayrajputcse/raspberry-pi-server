@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by somil.jain on 31/05/19.
  */
-public class GetFKDetails implements Get{
+public class GetFKDetails implements Action {
 
     @Override
     public List<Product> searchKeyWordsAndReturnProducts(String word) throws IOException {
@@ -29,8 +29,8 @@ public class GetFKDetails implements Get{
     }
 
     @Override
-    public boolean updateCollection(CollectionRequest collectionRequest) throws IOException {
+    public boolean updateCollection(CollectionRequest collectionRequest,String collectionId) throws IOException {
         CollectionService collectionService = new CollectionService();
-        return collectionService.updateCollection(collectionRequest);
+        return collectionService.updateCollection(collectionRequest, collectionId);
     }
 }
