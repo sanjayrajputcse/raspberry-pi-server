@@ -23,14 +23,24 @@ public class ListDetailDAO extends HDao<ListDetail> {
         super(sessionFactory);
     }
 
-    public Optional<ListDetail> get(String listId) {
+    public ListDetail get(String listId) {
         Criteria criteria = this.currentSession().createCriteria(ListDetail.class);
         criteria.add(Restrictions.eq("listId", listId));
         final List list = criteria.list();
         if(list != null && list.size()>0){
-            Optional.of((ListDetail) list.get(0));
+          return (ListDetail) list.get(0);
         }
-        return Optional.empty();
+        return null;
+    }
+
+    public List<ListDetail> getAll(String fkAccountId) {
+        Criteria criteria = this.currentSession().createCriteria(ListDetail.class);
+        criteria.add(Restrictions.eq("fkAccountId", fkAccountId));
+        final List list = criteria.list();
+        if(list != null && list.size()>0){
+           return list;
+        }
+        return null;
     }
 }
 

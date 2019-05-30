@@ -27,14 +27,17 @@ public class UserAction extends AbstractTimeEntity {
     @Column(name = "fk_account_id")
     private String fkAccountId;
 
-    @Column(name = "is_done")
-    private boolean isDone;
-
     @Column(name = "action_name")
     private String actionName;
 
     @Column(name = "action_value")
     private String actionValue;
+
+    @Column(name = "list_id")
+    private String listId;
+
+    @Column(name = "is_done")
+    private boolean isDone;
 
     @Column(name = "talk_back_text")
     private String talkBackText;
