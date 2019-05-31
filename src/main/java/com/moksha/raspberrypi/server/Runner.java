@@ -2,13 +2,14 @@ package com.moksha.raspberrypi.server;
 
 import com.moksha.raspberrypi.server.InternalClient.FkAction;
 import com.moksha.raspberrypi.server.fkService.GroceryBasketService;
-import com.moksha.raspberrypi.server.fkService.PNService;
-import com.moksha.raspberrypi.server.fkService.ProductDetailService;
-import com.moksha.raspberrypi.server.models.PNRequest;
-import com.moksha.raspberrypi.server.models.entities.*;
+import com.moksha.raspberrypi.server.models.entities.CartContext;
+import com.moksha.raspberrypi.server.models.entities.Product;
+import com.moksha.raspberrypi.server.models.entities.Quantity;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by somil.jain on 30/05/19.
@@ -39,9 +40,11 @@ public class Runner {
 //        PNService pnService = new PNService();
 //        pnService.sendPushNotification(pnRequest);
         HashMap<String, Quantity> cartContext = new HashMap<>();
-        cartContext.put("LSTTPSFDXD6ZVQSXMUSODPSAL",new Quantity(2));
+        cartContext.put("LSTTPSFDXD6ZVQSXMUSODPSAL",new Quantity(4));
         CartContext cartContext1 = new CartContext(cartContext);
         GroceryBasketService groceryBasketService = new GroceryBasketService();
         groceryBasketService.addListingToMyCart(null,cartContext1);
+//        groceryBasketService.removeBasket(null);
+//        groceryBasketService.removeListingFromGroceryBucket(null,"LSTTPSFDXD6ZVQSXMUSODPSAL");
     }
 }
