@@ -1,16 +1,16 @@
 package com.moksha.raspberrypi.server.ajay.resources;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.inject.Inject;
 
 import com.moksha.raspberrypi.server.ajay.dao.ListDetailDAO;
 import com.moksha.raspberrypi.server.ajay.dao.UserAccountDAO;
 import com.moksha.raspberrypi.server.ajay.dao.UserActionDAO;
-import com.moksha.raspberrypi.server.ajay.models.entities.Action;
-import com.moksha.raspberrypi.server.ajay.models.entities.ListDetail;
-import com.moksha.raspberrypi.server.ajay.models.entities.UserAccount;
-import com.moksha.raspberrypi.server.ajay.models.entities.UserAction;
+import com.moksha.raspberrypi.server.ajay.models.entities.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -21,6 +21,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import com.moksha.raspberrypi.server.utils.MyObjectMapper;
 import io.dropwizard.hibernate.UnitOfWork;
 
 /**
@@ -49,15 +50,60 @@ public class GAppResource {
                          @QueryParam("list_id") String listId,
                          @Context ContainerRequestContext crc) throws Exception {
 
-        if (Action.getActionFromString(actionName) == Action.INVALID)
+        Action action = Action.getActionFromString(actionName);
+        if (action == Action.INVALID)
             return -1;
+        long actionId = -1;
+        switch (action) {
+            case CREATE_LIST:
+                UserAction userAction = new UserAction();
+                userAction.setFkAccountId(fkAccountId);
+                userAction.setActionName(actionName);
+                userAction.setListId(listId);
+                userActionDAO.create(userAction);
+                actionId = userActionDAO.create(userAction).getId();
 
-        UserAction userAction = new UserAction();
-        userAction.setFkAccountId(fkAccountId);
-        userAction.setActionName(actionName);
-        userAction.setActionValue(actionValue);
-        userAction.setListId(listId);
-        return userActionDAO.create(userAction).getId();
+                ListDetail listDetail = new ListDetail();
+                listDetail.setFkAccountId(fkAccountId);
+                listDetail.setListId(listId);
+                listDetail.setListItems(MyObjectMapper.getJsonString(Arrays.asList()));
+                listDetailDAO.create(listDetail);
+                break;
+
+            case REMOVE_LIST:
+                break;
+
+            case ADD_ITEM_TO_LIST:
+                ListDetail listDetail2 = listDetailDAO.get(listId);
+                List<Item> items = MyObjectMapper.getClassObject(listDetail2.getListItems(), new TypeReference<List<Item>>(){});
+                items.add(new Item(actionValue, null, null));
+                listDetail2.setListItems(MyObjectMapper.getJsonString(items));
+
+                UserAction userAction2 = new UserAction();
+                userAction2.setFkAccountId(fkAccountId);
+                userAction2.setActionName(actionName);
+                userAction2.setActionValue(actionValue);
+                userAction2.setListId(listId);
+                actionId = userActionDAO.create(userAction2).getId();
+                break;
+
+            case REMOVE_ITEM_FROM_LIST:
+                ListDetail listDetail3 = listDetailDAO.get(listId);
+                List<Item> items2 = MyObjectMapper.getClassObject(listDetail3.getListItems(), new TypeReference<List<Item>>(){});
+                items2 = items2.stream()
+                        .filter(item -> item.getProductTitle() == null || !item.getProductTitle().toLowerCase().contains(actionValue.toLowerCase()))
+                        .collect(Collectors.toList());
+                listDetail3.setListItems(MyObjectMapper.getJsonString(items2));
+
+                UserAction userAction3 = new UserAction();
+                userAction3.setFkAccountId(fkAccountId);
+                userAction3.setActionName(actionName);
+                userAction3.setActionValue(actionValue);
+                userAction3.setListId(listId);
+                actionId = userActionDAO.create(userAction3).getId();
+                break;
+        }
+        return actionId;
     }
 
     /*@GET
