@@ -19,9 +19,9 @@ server:
   requestLog:
      appenders:
        - type: file
-         currentLogFilename: /var/log/fvo/fvo-backend-server/requests.log
+         currentLogFilename: /var/log/flipkart/fvo/fvo-backend-server/requests.log
          archive: true
-         archivedLogFilenamePattern: /var/log/fvo/fvo-backend-server/requests-%d{yyyy-MM-dd}.log
+         archivedLogFilenamePattern: /var/log/flipkart/fvo/fvo-backend-server/requests-%d{yyyy-MM-dd}.log
          archivedFileCount: 50
 
 logging:
@@ -33,9 +33,9 @@ logging:
         threshold: ALL
         timeZone: IST
         logFormat: "%date %level [%thread] %logger{10} [%X{id}] %msg%n"
-        currentLogFilename: /var/log/fvo/fvo-backend-server/server.log
+        currentLogFilename: /var/log/flipkart/fvo/fvo-backend-server/server.log
         archive: true
-        archivedLogFilenamePattern: /var/log/fvo/fvo-backend-server/server-%d{yyyy-MM-dd}.log
+        archivedLogFilenamePattern: /var/log/flipkart/fvo/fvo-backend-server/server-%d{yyyy-MM-dd}.log
         archivedFileCount: 20
 
 database:

@@ -80,6 +80,10 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
 
             final List<UserAction> allPendingUserActions = gcpConnectService.getAllPendingUserActions();
 
+            if(allPendingUserActions.isEmpty()){
+                System.out.println("No Actions");
+            }
+
             allPendingUserActions.stream().forEachOrdered(userAction -> {
                 int retryCount = 0;
                 UserAction processedUserAction = null;
@@ -99,7 +103,6 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                     }
                 }
             });
-
             Thread.sleep(500);
         }
     }
