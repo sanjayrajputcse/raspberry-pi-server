@@ -1,12 +1,17 @@
 package com.moksha.raspberrypi.server.ajay.resources;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.inject.Inject;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.moksha.raspberrypi.server.ajay.dao.ListDetailDAO;
 import com.moksha.raspberrypi.server.ajay.dao.UserAccountDAO;
 import com.moksha.raspberrypi.server.ajay.dao.UserActionDAO;
-import com.moksha.raspberrypi.server.ajay.models.entities.*;
+import com.moksha.raspberrypi.server.ajay.models.entities.Action;
+import com.moksha.raspberrypi.server.ajay.models.entities.Item;
+import com.moksha.raspberrypi.server.ajay.models.entities.ListDetail;
+import com.moksha.raspberrypi.server.ajay.models.entities.UserAccount;
+import com.moksha.raspberrypi.server.ajay.models.entities.UserAction;
+import com.moksha.raspberrypi.server.utils.MyObjectMapper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +26,6 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import com.moksha.raspberrypi.server.utils.MyObjectMapper;
 import io.dropwizard.hibernate.UnitOfWork;
 
 /**
@@ -84,7 +88,8 @@ public class GAppResource {
 
             case ADD_ITEM_TO_LIST:
                 ListDetail listDetail2 = listDetailDAO.get(listId);
-                List<Item> items = MyObjectMapper.getClassObject(listDetail2.getListItems(), new TypeReference<List<Item>>(){});
+                List<Item> items = MyObjectMapper.getClassObject(listDetail2.getListItems(), new TypeReference<List<Item>>() {
+                });
                 items.add(new Item(actionValue, null, null));
                 listDetail2.setListItems(MyObjectMapper.getJsonString(items));
 
@@ -98,7 +103,8 @@ public class GAppResource {
 
             case REMOVE_ITEM_FROM_LIST:
                 ListDetail listDetail3 = listDetailDAO.get(listId);
-                List<Item> items2 = MyObjectMapper.getClassObject(listDetail3.getListItems(), new TypeReference<List<Item>>(){});
+                List<Item> items2 = MyObjectMapper.getClassObject(listDetail3.getListItems(), new TypeReference<List<Item>>() {
+                });
                 items2 = items2.stream()
                         .filter(item -> item.getProductTitle() == null || !item.getProductTitle().toLowerCase().contains(actionValue.toLowerCase()))
                         .collect(Collectors.toList());
@@ -114,15 +120,6 @@ public class GAppResource {
         }
         return actionId;
     }
-
-    /*@GET
-    @UnitOfWork
-    @Path("/showLists")
-    public long showLists(@QueryParam("fk_account_id") String fkAccountId,
-                                      @Context ContainerRequestContext crc) throws Exception {
-
-        return listDetailDAO.getAll(fkAccountId);
-    }*/
 
     @GET
     @UnitOfWork
@@ -166,24 +163,20 @@ public class GAppResource {
     }
 
 
-    /*
     @GET
     @UnitOfWork
     @Path("/getPendingTasks")
-    public boolean getPendingTasks(@Context ContainerRequestContext crc) throws Exception {
-
-        UserAction userAction = userActionDAO.get(actionId);
-        return userAction.isDone();
+    public List<UserAction> getPendingTasks(@Context ContainerRequestContext crc) throws Exception {
+        return userActionDAO.getPendingUserActions();
     }
 
     @GET
     @UnitOfWork
-    @Path("/getPendingTasks")
+    @Path("/updateTaskStatus")
     public boolean updateTaskStatus(@QueryParam("action_id") long actionId,
                                     @Context ContainerRequestContext crc) throws Exception {
-
         UserAction userAction = userActionDAO.get(actionId);
+        userAction.setDone(true);
         return userAction.isDone();
-    }*/
-
+    }
 }
