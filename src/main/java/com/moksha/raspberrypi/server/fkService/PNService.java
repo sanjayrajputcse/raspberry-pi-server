@@ -70,9 +70,8 @@ public class PNService {
     }
 
     private void updateDeviceId(PNRequest pnRequest, ObjectNode channelInfo) {
-        pnRequest.getDeviceIds().forEach(deviceId -> {
-            ((ArrayNode)channelInfo.putArray("deviceIds")).add(deviceId);
-        });
+        ArrayNode deviceNode = channelInfo.putArray("deviceIds");
+        pnRequest.getDeviceIds().forEach(deviceNode::add);
     }
 
     private boolean post(String url, String jsonBody) {
