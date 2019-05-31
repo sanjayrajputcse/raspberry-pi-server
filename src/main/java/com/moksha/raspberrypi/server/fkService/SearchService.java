@@ -27,7 +27,7 @@ public class SearchService {
 
     public List<Product> searchOnAKeyword(String word) throws IOException {
         List<Product> listOfProduct = new ArrayList<>();
-        String url = HOST + API ;
+        String url = HOST + API + word ;
 //        System.out.println(url);
         Request request = new Request.Builder()
                 .url(url)
