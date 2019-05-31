@@ -51,9 +51,10 @@ public class MaterializedFSNDAO extends HDao<MaterializedFSN> {
 
     }
 
-    public List<MaterializedFSN> getMaterializedFSNListItemSearch(String fkAccountId, String listItem) {
+    public List<MaterializedFSN> getMaterializedFSNListItemSearch(String fkAccountId, String listId, String listItem) {
         Criteria criteria = this.currentSession().createCriteria(MaterializedFSN.class);
         criteria.add(Restrictions.eq("fkAccountId", fkAccountId));
+        criteria.add(Restrictions.eq("listName", listId));
         criteria.add(Restrictions.like("fsnName", "%" + listItem + "%"));
         return criteria.list();
     }

@@ -112,9 +112,9 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                     try {
                         hsession.commit();
                         gcpConnectService.setStatusAndDesc(processedUserAction.getId(), processedUserAction.getTalkBackText());
+                        System.out.println();
+                        System.out.println();
                         System.out.println("Processed: "+ processedUserAction.toString());
-                        System.out.println();
-                        System.out.println();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -187,10 +187,9 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
 
                 break;
             case ADD_ITEM_TO_LIST:
-                final String listIdAddItem = userAction.getListId();
                 try {
                     final String itemQuery = actionValue;
-                    final List<MaterializedFSN> existingFSN = materializedFSNDAO.getMaterializedFSNListItemSearch(fkAccountId, itemQuery);
+                    final List<MaterializedFSN> existingFSN = materializedFSNDAO.getMaterializedFSNListItemSearch(fkAccountId, listId, itemQuery);
                     if(existingFSN != null && !existingFSN.isEmpty()){
                         userAction.setDone(true);
                         userAction.setTalkBackText(itemQuery + " Already Added to List");
@@ -202,7 +201,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                     final String listingId = product.getListingId();
                     final String productTitle = product.getProductTitle() == null ? itemQuery : product.getProductTitle().toLowerCase();
 
-                    final MaterializedCollection materializedCollectionToBeUpdated = materializedCollectionDAO.getMaterializedCollection(fkAccountId, listIdAddItem);
+                    final MaterializedCollection materializedCollectionToBeUpdated = materializedCollectionDAO.getMaterializedCollection(fkAccountId, listId);
 
                     if(isAbleToAddProductToCollection(materializedCollectionToBeUpdated, productId)) {
                         MaterializedFSN materializedFSN = new MaterializedFSN();
@@ -210,7 +209,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                         materializedFSN.setFsnId(productId);
                         materializedFSN.setFsnName(productTitle);
                         materializedFSN.setListItem(itemQuery);
-                        materializedFSN.setListName(listIdAddItem);
+                        materializedFSN.setListName(listId);
                         materializedFSN.setListingId(listingId);
 
                         materializedFSNDAO.create(materializedFSN);
@@ -238,21 +237,21 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 }
 
                 final String itemQuery = actionValue;
-                final List<MaterializedFSN> existingFSN = materializedFSNDAO.getMaterializedFSNListItemSearch(fkAccountId, itemQuery);
+                final List<MaterializedFSN> existingFSN = materializedFSNDAO.getMaterializedFSNListItemSearch(fkAccountId, listId, itemQuery);
                 if(existingFSN == null || existingFSN.isEmpty()){
                     userAction.setDone(true);
                     userAction.setTalkBackText(itemQuery + " is not present in List " + listId);
                     return userAction;
                 }
 
-                List<MaterializedFSN> materializedFSNListItemSearch = materializedFSNDAO.getMaterializedFSNListItemSearch(fkAccountId, actionValue);
+                List<MaterializedFSN> materializedFSNListItemSearch = materializedFSNDAO.getMaterializedFSNListItemSearch(fkAccountId, listId, actionValue);
 
                 final List<String> searchedFsnIds = materializedFSNListItemSearch
                         .stream().map(materializedFSN -> materializedFSN.getFsnId())
                         .collect(Collectors.toList());
 
                 if(materializedFSNListItemSearch.size()>0){
-                    talkBackText = actionValue + " Not present in the List";
+                    talkBackText = actionValue + " removed from the List";
                 }
 
                 if(isAbleToRemoveProductFromCollection(materializedCollectionToBeUpdated, searchedFsnIds)) {
