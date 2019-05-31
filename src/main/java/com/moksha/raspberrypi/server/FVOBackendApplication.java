@@ -97,7 +97,10 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 int retryCount = 0;
                 UserAction processedUserAction = null;
                 while(retryCount++ < 3 && !userAction.isDone()) {
+                    System.out.println("########################################");
                     System.out.println("Processing: "+ userAction.toString());
+                    System.out.println();
+                    System.out.println();
                     processedUserAction = processUserAction(userAction);
                 }
                 if(processedUserAction == null){
@@ -110,6 +113,8 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                         hsession.commit();
                         gcpConnectService.setStatusAndDesc(processedUserAction.getId(), processedUserAction.getTalkBackText());
                         System.out.println("Processed: "+ processedUserAction.toString());
+                        System.out.println();
+                        System.out.println();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
