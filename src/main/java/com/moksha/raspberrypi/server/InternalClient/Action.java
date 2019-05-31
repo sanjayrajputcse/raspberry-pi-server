@@ -1,5 +1,6 @@
 package com.moksha.raspberrypi.server.InternalClient;
 
+import com.moksha.raspberrypi.server.models.PNRequest;
 import com.moksha.raspberrypi.server.models.entities.CollectionRequest;
 import com.moksha.raspberrypi.server.models.entities.CollectionResponse;
 import com.moksha.raspberrypi.server.models.entities.Product;
@@ -16,6 +17,6 @@ public interface Action {
     public CollectionResponse createCollection(CollectionRequest collectionRequest) throws IOException;
     public boolean updateCollection(CollectionRequest collectionRequest, String collectionId) throws IOException;
     public String getCollectionUrl(String collectionId);
-    public boolean pushNotification(String collectionUrl, List<String> deviceIds);
+    public boolean pushNotification(PNRequest pnRequest);
 
 }
