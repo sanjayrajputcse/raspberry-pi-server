@@ -12,6 +12,7 @@ import com.moksha.raspberrypi.server.dao.fvo.backend.MaterializedCollectionDAO;
 import com.moksha.raspberrypi.server.dao.fvo.backend.MaterializedFSNDAO;
 import com.moksha.raspberrypi.server.filters.RequestFilter;
 import com.moksha.raspberrypi.server.fkService.GCPConnectService;
+import com.moksha.raspberrypi.server.models.PNRequest;
 import com.moksha.raspberrypi.server.models.entities.CollectionRequest;
 import com.moksha.raspberrypi.server.models.entities.Product;
 import com.moksha.raspberrypi.server.models.entities.fvo.backend.ActiveAccounts;
@@ -204,6 +205,23 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
 
                 break;
             case SEND_LIST_TO_PN:
+                final String sendToDeviceListId = userAction.getListId();
+                final String currentAccountId = userAction.getFkAccountId();
+                final String deviceId = activeAccountsDAO.getDeviceId(currentAccountId);
+                final MaterializedCollection materializedCollectionToSend = materializedCollectionDAO.getMaterializedCollection(currentAccountId, sendToDeviceListId);
+
+                PNRequest pnRequest = new PNRequest(materializedCollectionToSend.getUrl(),Arrays.asList(deviceId));
+
+                try {
+
+                    final boolean success = getFKDetails.pushNotification(pnRequest);
+                    if(success) {
+                        userAction.setDone(true);
+                        userAction.setTalkBackText(actionValue + " List send to Device!");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
 
         }

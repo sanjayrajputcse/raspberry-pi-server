@@ -3,14 +3,15 @@ package com.moksha.raspberrypi.server.fkService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.moksha.raspberrypi.server.models.entities.Product;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by somil.jain on 30/05/19.
@@ -27,7 +28,7 @@ public class SearchService {
 
     public List<Product> searchOnAKeyword(String word) throws IOException {
         List<Product> listOfProduct = new ArrayList<>();
-        String url = HOST + API ;
+        String url = HOST + API + word;
 //        System.out.println(url);
         Request request = new Request.Builder()
                 .url(url)
