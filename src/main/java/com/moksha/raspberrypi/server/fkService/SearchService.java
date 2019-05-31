@@ -41,7 +41,7 @@ public class SearchService {
 //        System.out.println(responseBody);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            JsonNode jsonNode = objectMapper.readTree(responseBody);;
+            JsonNode jsonNode = objectMapper.readTree(responseBody);
             if (jsonNode != null) {
                 JsonNode produts = jsonNode.get("RESPONSE").get("products").get("listing-ids");
                 if(produts.isArray())
@@ -53,7 +53,10 @@ public class SearchService {
                         System.out.printf("i");
                         String productId = next.get("product-id").asText();
                         String listingId = next.get("listing-id").asText();
-                        listOfProduct.add(new Product(productId, listingId));
+                        Product product = new Product(productId, listingId);
+                        product.setProductTitle(new ProductDetailService().getProductTitle(productId));
+                        listOfProduct.add(product);
+                        break;
                     }
                 }
             }
