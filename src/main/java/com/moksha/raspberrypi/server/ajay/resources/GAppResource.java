@@ -176,9 +176,19 @@ public class GAppResource {
     public boolean updateTaskStatus(@QueryParam("action_id") long actionId,
                                     @QueryParam("talk_back_text") String talkBackText,
                                     @Context ContainerRequestContext crc) throws Exception {
+        final String talkBackText2 = talkBackText.replaceAll("\"", "");
         UserAction userAction = userActionDAO.get(actionId);
         userAction.setDone(true);
-        userAction.setTalkBackText(talkBackText);
-        return userAction.isDone();
+        userAction.setTalkBackText(talkBackText2);
+
+        ListDetail listDetail = listDetailDAO.get(userAction.getListId());
+        List<Item> items = MyObjectMapper.getClassObject(listDetail.getListItems(), new TypeReference<List<Item>>() {});
+        items.forEach(item -> {
+            if (item.getQueryName().equalsIgnoreCase(userAction.getActionValue())) {
+                item.setProductTitle(talkBackText2);
+            }
+        });
+        listDetail.setListItems(MyObjectMapper.getJsonString(items));
+        return true;
     }
 }

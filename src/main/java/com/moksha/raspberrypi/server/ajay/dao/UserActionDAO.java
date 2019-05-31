@@ -26,7 +26,7 @@ public class UserActionDAO extends HDao<UserAction> {
 
     public List<UserAction> getPendingUserActions() {
         Criteria criteria = this.currentSession().createCriteria(UserAction.class);
-        criteria.add(Restrictions.eq("is_done", false));
+        criteria.add(Restrictions.eq("isDone", false));
         criteria.addOrder(Order.asc("id"));
 
         return criteria.list();
