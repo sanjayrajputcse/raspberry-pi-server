@@ -200,6 +200,8 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 HSession hSession = new HSession();
                 hSession.openWithSeparateTransaction();
 
+                String talkBackText = actionValue + " Removed from List";
+
                 final MaterializedCollection materializedCollectionToBeUpdated = materializedCollectionDAO.getMaterializedCollection(fkAccountId, listId);
 
                 List<MaterializedFSN> materializedFSNListItemSearch = materializedFSNDAO.getMaterializedFSNListItemSearch(fkAccountId, actionValue);
@@ -207,6 +209,10 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 final List<String> searchedFsnIds = materializedFSNListItemSearch
                         .stream().map(materializedFSN -> materializedFSN.getFsnId())
                         .collect(Collectors.toList());
+
+                if(materializedFSNListItemSearch.size()>0){
+                    talkBackText = actionValue + " Not present in the List";
+                }
 
                 if(isAbleToRemoveProductFromCollection(materializedCollectionToBeUpdated, searchedFsnIds)) {
                     materializedFSNListItemSearch
@@ -216,7 +222,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                                 hSession.close();
                             });
                     userAction.setDone(true);
-                    userAction.setTalkBackText(actionValue + " Removed from List");
+                    userAction.setTalkBackText(talkBackText);
                 }
 
                 break;

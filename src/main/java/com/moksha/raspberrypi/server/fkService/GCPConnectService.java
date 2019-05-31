@@ -43,6 +43,7 @@ public class GCPConnectService {
                 String responseBody = response.body().string();
                 userActions = objectMapper.readValue(responseBody, new TypeReference<List<UserAction>>() {
                 });
+                response.close();
             }else {
                 System.out.println("Empty Response for getAllPendingUserActions()");
                 return userActions;
@@ -60,6 +61,7 @@ public class GCPConnectService {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
-        client.newCall(request).execute();
+        Response response = client.newCall(request).execute();
+        response.close();
     }
 }
