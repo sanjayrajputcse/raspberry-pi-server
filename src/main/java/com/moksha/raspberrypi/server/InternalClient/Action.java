@@ -21,5 +21,6 @@ public interface Action {
     public String getCollectionUrl(String collectionId);
     public boolean pushNotification(PNRequest pnRequest) throws IOException;
     public boolean addToGroceryBucket(String sn, CartContext cartContext) throws IOException;
+    public boolean removeListingFromGroceryBucket(String sn, String listingId) throws IOException;
 
 }

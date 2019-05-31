@@ -39,9 +39,10 @@ public class Runner {
 //        PNService pnService = new PNService();
 //        pnService.sendPushNotification(pnRequest);
         HashMap<String, Quantity> cartContext = new HashMap<>();
-        cartContext.put("LSTTPSFDXD6ZVQSXMUSODPSAL",new Quantity(2));
+        cartContext.put("LSTTPSFDXD6ZVQSXMUSODPSAL",new Quantity(4));
         CartContext cartContext1 = new CartContext(cartContext);
         GroceryBasketService groceryBasketService = new GroceryBasketService();
         groceryBasketService.addListingToMyCart(null,cartContext1);
+        groceryBasketService.removeListingFromGroceryBucket(null,"LSTTPSFDXD6ZVQSXMUSODPSAL");
     }
 }

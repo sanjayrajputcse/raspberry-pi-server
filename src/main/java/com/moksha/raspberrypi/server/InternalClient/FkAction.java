@@ -58,4 +58,9 @@ public class FkAction implements Action {
     public boolean addToGroceryBucket(String sn, CartContext cartContext) throws IOException {
         return new GroceryBasketService().addListingToMyCart(sn, cartContext);
     }
+
+    @Override
+    public boolean removeListingFromGroceryBucket(String sn, String listingId) throws IOException {
+        return new GroceryBasketService().removeListingFromGroceryBucket(sn, listingId);
+    }
 }
