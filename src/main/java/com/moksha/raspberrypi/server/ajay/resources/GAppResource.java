@@ -146,6 +146,23 @@ public class GAppResource {
 
     }
 
+
+    @GET
+    @UnitOfWork
+    @Path("/addListToBasket")
+    public long addListToBasket(@QueryParam("list_id") String listId,
+                                @Context ContainerRequestContext crc) throws Exception {
+
+        String fkAccountId = userAccountDAO.getUserAccount().getFkAccountId();
+        UserAction sendListToDeviceUserAction = new UserAction();
+        sendListToDeviceUserAction.setFkAccountId(fkAccountId);
+        sendListToDeviceUserAction.setActionName(Action.ADD_LIST_TO_BASKET.getValue());
+        sendListToDeviceUserAction.setListId(listId);
+
+        return userActionDAO.create(sendListToDeviceUserAction).getId();
+
+    }
+
     @GET
     @UnitOfWork
     @Path("/isDone")
