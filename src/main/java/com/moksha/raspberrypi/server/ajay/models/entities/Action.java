@@ -8,7 +8,7 @@ public enum Action {
     REMOVE_LIST("removeList"),
     ADD_ITEM_TO_LIST("addItemToList"),
     REMOVE_ITEM_FROM_LIST("removeItemFromList"),
-    SEND_LIST_TO_PN("sendListToDevice"),
+    SEND_LIST_TO_PN("sendListToPN"),
     ADD_LIST_TO_BASKET("addListToBasket"),
     INVALID("invalid");
 
