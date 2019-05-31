@@ -16,8 +16,8 @@ import okhttp3.Response;
 public class GCPConnectService {
     String METHOD_GET = "GET";
     String HOST = "http://35.231.5.148:20000";
-    String GET_POLL_API = "/actions/poll";
-    String GET_UPDATE_API = "/actions?action_id={action_id}/talk_back_text={talk_back_text}";
+    String GET_POLL_API = "v0/gapp/getPendingTasks";
+    String GET_UPDATE_API = "v0/gapp/updateTask?action_id={action_id}&talk_back_text={talk_back_text}";
 
     OkHttpClient client;
     ObjectMapper objectMapper;
