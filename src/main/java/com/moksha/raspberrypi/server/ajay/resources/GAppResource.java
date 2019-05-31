@@ -71,6 +71,15 @@ public class GAppResource {
                 break;
 
             case REMOVE_LIST:
+                UserAction userAction4 = new UserAction();
+                userAction4.setFkAccountId(fkAccountId);
+                userAction4.setActionName(actionName);
+                userAction4.setListId(listId);
+                userActionDAO.create(userAction4);
+                actionId = userActionDAO.create(userAction4).getId();
+
+                ListDetail listDetail4 = listDetailDAO.get(listId);
+                listDetailDAO.delete(listDetail4);
                 break;
 
             case ADD_ITEM_TO_LIST:
