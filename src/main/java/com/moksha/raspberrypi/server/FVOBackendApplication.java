@@ -3,7 +3,7 @@ package com.moksha.raspberrypi.server;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 
-import com.moksha.raspberrypi.server.InternalClient.GetFKDetails;
+import com.moksha.raspberrypi.server.InternalClient.FkAction;
 import com.moksha.raspberrypi.server.ajay.models.entities.Action;
 import com.moksha.raspberrypi.server.ajay.models.entities.UserAction;
 import com.moksha.raspberrypi.server.dao.GuiceInjector;
@@ -36,7 +36,8 @@ import io.dropwizard.setup.Environment;
 public class FVOBackendApplication extends io.dropwizard.Application<RPiConfiguration> {
 
     GCPConnectService gcpConnectService = new GCPConnectService();
-    GetFKDetails getFKDetails = new GetFKDetails();
+
+    FkAction getFKDetails = new FkAction();
 
     @Inject
     ActiveAccountsDAO activeAccountsDAO;

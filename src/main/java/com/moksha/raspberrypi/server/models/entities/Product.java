@@ -13,10 +13,13 @@ public class Product {
 
     String productId;
     String listingId;
+    @Setter
+    String productTitle;
 
     public Product(String productId, String listingId) {
         this.productId = productId;
         this.listingId = listingId;
+
 
     }
 }

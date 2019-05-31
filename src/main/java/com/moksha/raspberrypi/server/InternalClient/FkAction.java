@@ -14,7 +14,7 @@ import java.util.List;
  * Created by somil.jain on 31/05/19.
  */
 @Data
-public class GetFKDetails implements Action {
+public class FkAction implements Action {
 
     @Override
     public List<Product> searchKeyWordsAndReturnProducts(String word) throws IOException {
@@ -31,7 +31,7 @@ public class GetFKDetails implements Action {
     }
 
     @Override
-    public boolean updateCollection(CollectionRequest collectionRequest,String collectionId) throws IOException {
+    public boolean updateCollection(CollectionRequest collectionRequest, String collectionId) throws IOException {
         CollectionService collectionService = new CollectionService();
         return collectionService.updateCollection(collectionRequest, collectionId);
     }
@@ -42,5 +42,10 @@ public class GetFKDetails implements Action {
             return "https://www.flipkart.com/all/~cs-" + collectionId + "/pr?sid=all";
         }
         return null;
+    }
+
+    @Override
+    public boolean pushNotification() {
+        return false;
     }
 }
