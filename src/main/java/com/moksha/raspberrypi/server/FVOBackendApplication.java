@@ -218,7 +218,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 materializedFSNList.forEach(materializedFSN -> map.put(materializedFSN.getListingId(), new Quantity(1)));
                 CartContext cartContext = new CartContext(map);
                 try {
-                    final boolean success = fkAction.addToGroceryBucket(securityToken, cartContext);
+                    final boolean success = fkAction.addToGroceryBasket(securityToken, cartContext);
                     if(success) {
                         userAction.setDone(true);
                         userAction.setTalkBackText(actionValue + " List Added to Basket!");
@@ -228,6 +228,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 }
 
 
+
                 break;
             case SEND_LIST_TO_PN:
                 final String sendToDeviceListId = userAction.getListId();
@@ -235,7 +236,8 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 final String deviceId = activeAccountsDAO.getDeviceId(currentAccountId);
                 final MaterializedCollection materializedCollectionToSend = materializedCollectionDAO.getMaterializedCollection(currentAccountId, sendToDeviceListId);
 
-                PNRequest pnRequest = new PNRequest(materializedCollectionToSend.getUrl(),Arrays.asList(deviceId),"udpate");
+                String pnTitle = "Here is your grocery list " + materializedCollectionToSend.getListName();
+                PNRequest pnRequest = new PNRequest(materializedCollectionToSend.getUrl(), Arrays.asList(deviceId), pnTitle);
 
                 try {
                     final boolean success = fkAction.pushNotification(pnRequest);
