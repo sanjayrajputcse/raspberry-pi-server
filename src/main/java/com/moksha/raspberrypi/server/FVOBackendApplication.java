@@ -293,7 +293,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
 
                 String pnTitle = "Here is your basket";
                 try {
-                    fkAction.pushNotification(new PNRequest(basketViewURL, Arrays.asList(deviceId), pnTitle));
+                    fkAction.pushNotification(new PNRequest(basketViewURL, Arrays.asList(deviceId), pnTitle, true));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -310,7 +310,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                     return userAction;
                 }
                 pnTitle = "Here is your grocery list " + materializedCollectionToSend.getListName();
-                PNRequest pnRequest = new PNRequest(materializedCollectionToSend.getUrl(), Arrays.asList(deviceId), pnTitle);
+                PNRequest pnRequest = new PNRequest(materializedCollectionToSend.getUrl(), Arrays.asList(deviceId), pnTitle, false);
 
                 try {
                     final boolean success = fkAction.pushNotification(pnRequest);

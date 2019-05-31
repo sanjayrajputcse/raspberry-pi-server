@@ -12,10 +12,12 @@ public class PNRequest {
     String collectionUrl;
     List<String> deviceIds;
     String pnTitle;
+    boolean isCart;
 
-    public PNRequest(String collectionUrl, List<String> deviceIds, String pnTitle) {
+    public PNRequest(String collectionUrl, List<String> deviceIds, String pnTitle,boolean isCart) {
         this.collectionUrl = collectionUrl;
         this.deviceIds = deviceIds;
         this.pnTitle = pnTitle;
+        this.isCart = isCart;
     }
 }

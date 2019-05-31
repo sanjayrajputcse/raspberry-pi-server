@@ -48,6 +48,11 @@ public class PNService {
                 JsonNode dataJsonNode = jsonNode.get("channelData").get("data");
                 updateText(dataJsonNode,pnRequest.getPnTitle());
             }
+            if(pnRequest.isCart())
+            {
+                JsonNode dataJsonNode = jsonNode.get("channelData").get("data").get("action");
+                ((ObjectNode)dataJsonNode).put("screenType","showCart");
+            }
             String URL = HOST + API;
             System.out.println("url: " + URL);
             System.out.println("request: "+objectMapper.writeValueAsString(jsonNode));
