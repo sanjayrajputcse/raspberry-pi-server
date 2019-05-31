@@ -46,4 +46,7 @@ public class MaterializedFSN extends AbstractTimeEntity {
     @Column(name = "fsn_name")
     private String fsnName;
 
+    @Column(name = "listing_id")
+    private String listingId;
+
 }

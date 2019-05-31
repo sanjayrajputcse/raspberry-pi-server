@@ -9,6 +9,7 @@ public enum Action {
     ADD_ITEM_TO_LIST("addItemToList"),
     REMOVE_ITEM_FROM_LIST("removeItemFromList"),
     SEND_LIST_TO_PN("sendListToDevice"),
+    ADD_LIST_TO_BASKET("addListToBasket"),
     INVALID("invalid");
 
     String value;
