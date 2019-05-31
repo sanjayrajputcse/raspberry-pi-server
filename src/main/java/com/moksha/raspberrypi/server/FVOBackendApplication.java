@@ -1,7 +1,6 @@
 package com.moksha.raspberrypi.server;
 
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 
 import com.moksha.raspberrypi.server.InternalClient.FkAction;
 import com.moksha.raspberrypi.server.ajay.models.entities.Action;
@@ -17,12 +16,8 @@ import com.moksha.raspberrypi.server.models.entities.CollectionResponse;
 import com.moksha.raspberrypi.server.models.entities.Product;
 import com.moksha.raspberrypi.server.models.entities.fvo.backend.MaterializedCollection;
 import com.moksha.raspberrypi.server.models.entities.fvo.backend.MaterializedFSN;
-import com.moksha.raspberrypi.server.resources.AppHealthCheck;
-import com.moksha.raspberrypi.server.resources.ApplicationResource;
-import com.moksha.raspberrypi.server.resources.DeviceResource;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -39,13 +34,10 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
 
     FkAction getFKDetails = new FkAction();
 
-    @Inject
     ActiveAccountsDAO activeAccountsDAO;
 
-    @Inject
     MaterializedCollectionDAO materializedCollectionDAO;
 
-    @Inject
     MaterializedFSNDAO materializedFSNDAO;
 
     public static void main(String[] args) throws Exception {
@@ -77,15 +69,10 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
 
         environment.jersey().register(GuiceInjector.getInjector().getInstance(RequestFilter.class));
 
-        //app resources
-        environment.jersey().register(GuiceInjector.getInjector().getInstance(DeviceResource.class));
-        environment.jersey().register(GuiceInjector.getInjector().getInstance(ApplicationResource.class));
+        materializedCollectionDAO = GuiceInjector.getInjector().getInstance(MaterializedCollectionDAO.class);
+        activeAccountsDAO = GuiceInjector.getInjector().getInstance(ActiveAccountsDAO.class);
+        materializedFSNDAO = GuiceInjector.getInjector().getInstance(MaterializedFSNDAO.class);
 
-        //app manage resources
-        environment.lifecycle().manage(new RPiManage());
-
-        //app healthchecks
-        environment.healthChecks().register("healthCheck", new AppHealthCheck());
 
         while(true){
             // fetch actions from fvo thin server
@@ -93,34 +80,29 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
 
             final List<UserAction> allPendingUserActions = gcpConnectService.getAllPendingUserActions();
 
-            final List<UserAction> allCompletedUserActions = new ArrayList<>();
+            if(allPendingUserActions.isEmpty()){
+                System.out.println("No Actions");
+            }
 
             allPendingUserActions.stream().forEachOrdered(userAction -> {
-                final UserAction processedUserAction = processUserAction(userAction);
-                if(processedUserAction.isDone()){
+                int retryCount = 0;
+                UserAction processedUserAction = null;
+                while(retryCount++ < 3 && !userAction.isDone()) {
+                    processedUserAction = processUserAction(userAction);
+                }
+                if(processedUserAction == null){
+                    processedUserAction = userAction;
+                    processedUserAction.setDone(true);
+                    processedUserAction.setTalkBackText("Error");
+                }
+                if (processedUserAction.isDone()) {
                     try {
                         gcpConnectService.setStatusAndDesc(processedUserAction.getId(), processedUserAction.getTalkBackText());
-                        allCompletedUserActions.add(processedUserAction);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-                });
-
-            //createList
-            //1. call collection service to create a page
-            //2. create an entry in MaterializedCollections
-
-            //addItem
-            //1. search for fsn
-            //2. add fsn to page using collection service
-            //3. add an entry in MaterializedFsn.
-
-            // push result to fvo thin server
-            // addItem: FSN desc
-            // createList/removeItem/deleteList/removeItem/sendListToDevice: successful/error
-
-            // sleeping to avoid thrashing
+            });
             Thread.sleep(500);
         }
     }

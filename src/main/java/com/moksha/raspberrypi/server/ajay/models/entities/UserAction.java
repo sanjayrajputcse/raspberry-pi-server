@@ -3,9 +3,7 @@ package com.moksha.raspberrypi.server.ajay.models.entities;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.moksha.raspberrypi.server.models.entities.AbstractTimeEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +19,8 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserAction extends AbstractTimeEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 

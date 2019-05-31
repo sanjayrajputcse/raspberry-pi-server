@@ -21,6 +21,6 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Item {
     private String queryName;
-    private String resolvedName;
+    private String productTitle;
     private String quantity;
 }

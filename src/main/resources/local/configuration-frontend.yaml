@@ -1,4 +1,4 @@
-application: FVO-Backend-Server
+application: Raspberry-Pi-Server
 
 server:
   #adminMinThreads: 1
@@ -19,9 +19,9 @@ server:
   requestLog:
      appenders:
        - type: file
-         currentLogFilename: /var/log/flipkart/fvo/fvo-backend-server/requests.log
+         currentLogFilename: /var/log/moksha/raspberry-pi-server/requests.log
          archive: true
-         archivedLogFilenamePattern: /var/log/flipkart/fvo/fvo-backend-server/requests-%d{yyyy-MM-dd}.log
+         archivedLogFilenamePattern: /var/log/moksha/raspberry-pi-server/requests-%d{yyyy-MM-dd}.log
          archivedFileCount: 50
 
 logging:
@@ -33,9 +33,9 @@ logging:
         threshold: ALL
         timeZone: IST
         logFormat: "%date %level [%thread] %logger{10} [%X{id}] %msg%n"
-        currentLogFilename: /var/log/flipkart/fvo/fvo-backend-server/server.log
+        currentLogFilename: /var/log/moksha/raspberry-pi-server/server.log
         archive: true
-        archivedLogFilenamePattern: /var/log/flipkart/fvo/fvo-backend-server/server-%d{yyyy-MM-dd}.log
+        archivedLogFilenamePattern: /var/log/moksha/raspberry-pi-server/server-%d{yyyy-MM-dd}.log
         archivedFileCount: 20
 
 database:
@@ -46,7 +46,7 @@ database:
   # the password
   password:
   # the JDBC URL
-  url: jdbc:mysql://127.0.0.1:3306/fvo_backend
+  url: jdbc:mysql://127.0.0.1:3306/fvo
   # any properties specific to your JDBC driver:
   properties:
    charSet: UTF-8
@@ -54,13 +54,13 @@ database:
    hibernate.hbm2ddl.auto: update
    hibernate.session.events.log: false
   # the maximum amount of time to wait on an empty pool before throwing an exception
-  maxWaitForConnection: 10s
+  maxWaitForConnection: 60s
   # the SQL query to run when validating a connection's liveness
   validationQuery: "/* Raspberry-pi-server Health Check */ SELECT 1"
   # the minimum number of connections to keep open
   minSize: 2
   # the maximum number of connections to keep open
-  maxSize: 8
+  maxSize: 4
   # whether or not idle connections should be validated
   checkConnectionWhileIdle: false
   checkConnectionOnBorrow: true
