@@ -41,4 +41,7 @@ public class MaterializedCollection extends AbstractTimeEntity {
     @Column(name = "url")
     private String url;
 
+    @Column(name = "collection_id")
+    private String collectionId;
+
 }

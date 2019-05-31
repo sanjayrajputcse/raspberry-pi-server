@@ -33,7 +33,7 @@ public class MaterializedFSN extends AbstractTimeEntity {
     private String fkAccountId;
 
     @Column(name = "description")
-    private String device_id;
+    private String deviceId;
 
     @Column(name = "list_name")
     private String listName;
