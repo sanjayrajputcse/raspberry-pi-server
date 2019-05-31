@@ -8,10 +8,15 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.moksha.raspberrypi.server.models.PNRequest;
 import com.mysql.jdbc.StringUtils;
-import okhttp3.*;
 
 import java.io.File;
 import java.io.IOException;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Created by somil.jain on 31/05/19.
@@ -44,6 +49,7 @@ public class PNService {
                 updateText(dataJsonNode,pnRequest.getPnTitle());
             }
             String URL = HOST + API;
+            System.out.println("url: " + URL);
             System.out.println("request: "+objectMapper.writeValueAsString(jsonNode));
             return post(URL, objectMapper.writeValueAsString(jsonNode));
         } catch (Exception e) {

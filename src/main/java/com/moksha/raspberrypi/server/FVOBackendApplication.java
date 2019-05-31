@@ -137,6 +137,13 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
         switch (action){
             case CREATE_LIST:
 
+                final MaterializedCollection existingCollection = materializedCollectionDAO.getMaterializedCollection(fkAccountId, listId);
+                if(existingCollection != null){
+                    userAction.setDone(true);
+                    userAction.setTalkBackText(listId + " shopping list already exists!");
+                    return userAction;
+                }
+
                 CollectionRequest collectionRequest = new CollectionRequest(listId, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
                 /*try {
                     final CollectionResponse collection = fkAction.createCollection(collectionRequest);
@@ -169,6 +176,12 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 final String listIdAddItem = userAction.getListId();
                 try {
                     final String itemQuery = actionValue;
+                    final List<MaterializedFSN> existingFSN = materializedFSNDAO.getMaterializedFSNListItemSearch(fkAccountId, itemQuery);
+                    if(existingFSN != null && !existingFSN.isEmpty()){
+                        userAction.setDone(true);
+                        userAction.setTalkBackText(itemQuery + " Already Added to List");
+                        return userAction;
+                    }
                     final List<Product> products = fkAction.searchKeyWordsAndReturnProducts(itemQuery);
                     final Product product = products.get(0);
                     final String productId = product.getProductId();
@@ -204,6 +217,20 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
 
                 final MaterializedCollection materializedCollectionToBeUpdated = materializedCollectionDAO.getMaterializedCollection(fkAccountId, listId);
 
+                if(materializedCollectionToBeUpdated == null){
+                    userAction.setDone(true);
+                    userAction.setTalkBackText(listId + " shopping list is not created!");
+                    return userAction;
+                }
+
+                final String itemQuery = actionValue;
+                final List<MaterializedFSN> existingFSN = materializedFSNDAO.getMaterializedFSNListItemSearch(fkAccountId, itemQuery);
+                if(existingFSN == null || existingFSN.isEmpty()){
+                    userAction.setDone(true);
+                    userAction.setTalkBackText(itemQuery + " is not present in List " + listId);
+                    return userAction;
+                }
+
                 List<MaterializedFSN> materializedFSNListItemSearch = materializedFSNDAO.getMaterializedFSNListItemSearch(fkAccountId, actionValue);
 
                 final List<String> searchedFsnIds = materializedFSNListItemSearch
@@ -236,7 +263,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                     final boolean success = fkAction.addToGroceryBasket(securityToken, cartContext);
                     if(success) {
                         userAction.setDone(true);
-                        userAction.setTalkBackText(actionValue + " List Added to Basket!");
+                        userAction.setTalkBackText(listId + " List Added to Basket!");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -258,14 +285,14 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 final String currentAccountId = userAction.getFkAccountId();
                 final MaterializedCollection materializedCollectionToSend = materializedCollectionDAO.getMaterializedCollection(currentAccountId, sendToDeviceListId);
 
-                pnTitle = "Here is your grocery list: " + materializedCollectionToSend.getListName();
+                pnTitle = "Here is your grocery list " + materializedCollectionToSend.getListName();
                 PNRequest pnRequest = new PNRequest(materializedCollectionToSend.getUrl(), Arrays.asList(deviceId), pnTitle);
 
                 try {
                     final boolean success = fkAction.pushNotification(pnRequest);
                     if(success) {
                         userAction.setDone(true);
-                        userAction.setTalkBackText(actionValue + " List send to Device!");
+                        userAction.setTalkBackText(listId + " List send to Device!");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -297,10 +324,10 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
         return false;
     }
 
-    private boolean isAbleToRemoveProductFromCollection(MaterializedCollection materializedCollectionToBeUpdated, List<String> productIds){
+    private boolean isAbleToRemoveProductFromCollection(MaterializedCollection materializedCollectionToBeUpdated, List<String> productIds) {
         final String collectionId = materializedCollectionToBeUpdated.getCollectionId();
 
-        CollectionRequest collectionRequest = new CollectionRequest(Collections.EMPTY_LIST , productIds);
+        CollectionRequest collectionRequest = new CollectionRequest(Collections.EMPTY_LIST, productIds);
 
         try {
             return fkAction.updateCollection(collectionRequest, collectionId);
