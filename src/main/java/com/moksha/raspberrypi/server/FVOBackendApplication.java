@@ -169,8 +169,22 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 break;
             case REMOVE_LIST:
                 final MaterializedCollection materializedCollectionToRemove = materializedCollectionDAO.getMaterializedCollection(fkAccountId, listId);
-                final String collectionIdToBeRemoved = materializedCollectionToRemove.getCollectionId();
-                // stub to be implemented later.
+
+                if(materializedCollectionToRemove != null) {
+                    HSession hSession = new HSession();
+                    hSession.openWithSeparateTransaction();
+                    materializedCollectionDAO.delete(materializedCollectionToRemove);
+                    // collection service stub to be implemented later.
+                    hSession.commit();
+                    hSession.close();
+
+
+                    userAction.setTalkBackText("Removed List"+ listId);
+                }
+
+                userAction.setTalkBackText(listId + "List Does Not exist");
+                userAction.setDone(true);
+
                 break;
             case ADD_ITEM_TO_LIST:
                 final String listIdAddItem = userAction.getListId();
@@ -254,7 +268,13 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
 
                 break;
             case ADD_LIST_TO_BASKET:
-                final List<MaterializedFSN> materializedFSNList = materializedFSNDAO.getMaterializedFSNListItemSearch(fkAccountId, listId);
+                final List<MaterializedFSN> materializedFSNList = materializedFSNDAO.getMaterializedAllFSN(fkAccountId, listId);
+
+                if(materializedFSNList == null || materializedFSNList.isEmpty()) {
+                    userAction.setDone(true);
+                    userAction.setTalkBackText(listId + " List does not exists");
+                    return userAction;
+                }
 
                 Map<String,Quantity> map = new HashMap<>();
                 materializedFSNList.forEach(materializedFSN -> map.put(materializedFSN.getListingId(), new Quantity(1)));
@@ -285,12 +305,17 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 final String currentAccountId = userAction.getFkAccountId();
                 final MaterializedCollection materializedCollectionToSend = materializedCollectionDAO.getMaterializedCollection(currentAccountId, sendToDeviceListId);
 
+                if(materializedCollectionToSend == null) {
+                    userAction.setDone(true);
+                    userAction.setTalkBackText(listId + " List does not exists");
+                    return userAction;
+                }
                 pnTitle = "Here is your grocery list " + materializedCollectionToSend.getListName();
                 PNRequest pnRequest = new PNRequest(materializedCollectionToSend.getUrl(), Arrays.asList(deviceId), pnTitle);
 
                 try {
                     final boolean success = fkAction.pushNotification(pnRequest);
-                    if(success) {
+                    if (success) {
                         userAction.setDone(true);
                         userAction.setTalkBackText(listId + " List send to Device!");
                     }

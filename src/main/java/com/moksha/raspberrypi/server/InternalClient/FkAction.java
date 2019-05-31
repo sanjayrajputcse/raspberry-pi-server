@@ -9,10 +9,11 @@ import com.moksha.raspberrypi.server.models.entities.CartContext;
 import com.moksha.raspberrypi.server.models.entities.CollectionRequest;
 import com.moksha.raspberrypi.server.models.entities.CollectionResponse;
 import com.moksha.raspberrypi.server.models.entities.Product;
-import lombok.Data;
 
 import java.io.IOException;
 import java.util.List;
+
+import lombok.Data;
 
 /**
  * Created by somil.jain on 31/05/19.
@@ -70,6 +71,6 @@ public class FkAction implements Action {
 
     @Override
     public String getBasketViewURL() {
-        return "https://www.flipkart.com/viewcart";
+        return "https://www.flipkart.com/rv/viewcart";
     }
 }
