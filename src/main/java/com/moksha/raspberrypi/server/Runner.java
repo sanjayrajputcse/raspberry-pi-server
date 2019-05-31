@@ -22,15 +22,15 @@ public class Runner {
         List<String> toRemoveListingIds = new ArrayList<String>();
         toAddListingIds.add(cap.get(0).getListingId());
 //        CollectionRequest collectionRequest = new CollectionRequest("HACK", toAddListingIds, toRemoveListingIds);
-//        CollectionResponse newCollection = getFKDetails.createCollection(collectionRequest);
+//        CollectionResponse newCollection = fkAction.createCollection(collectionRequest);
 //        System.out.printf("\n collectionid : "+newCollection.getCollectionId());
 //        System.out.printf("\n collectionURL: "+newCollection.getCollectionUrl());
 //
 //        String collectionId = "h2pg3ulcx0";
 //        CollectionRequest collectionRequestUpdate = new CollectionRequest(toAddListingIds, toRemoveListingIds);
-//        boolean updated = getFKDetails.updateCollection(collectionRequestUpdate, collectionId);
+//        boolean updated = fkAction.updateCollection(collectionRequestUpdate, collectionId);
 //        System.out.println("updated " + updated);
-//        System.out.println(getFKDetails.getCollectionUrl(collectionId));
+//        System.out.println(fkAction.getCollectionUrl(collectionId));
 
 //        System.out.println("\n product title "+ new ProductDetailService().getProductTitle("HOLF8WHUEFDBRXF4"));
 //        List<String> deviceList = new ArrayList<>(Arrays.asList("17ca9de766aedc444c4b8574e143c3e5", "01d929401523ad5b6faa756e3b648446", "9c41fef0884f9ab8b0ecc1da921d71bb"));

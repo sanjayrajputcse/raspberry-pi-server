@@ -13,8 +13,10 @@ import com.moksha.raspberrypi.server.dao.fvo.backend.MaterializedFSNDAO;
 import com.moksha.raspberrypi.server.filters.RequestFilter;
 import com.moksha.raspberrypi.server.fkService.GCPConnectService;
 import com.moksha.raspberrypi.server.models.PNRequest;
+import com.moksha.raspberrypi.server.models.entities.CartContext;
 import com.moksha.raspberrypi.server.models.entities.CollectionRequest;
 import com.moksha.raspberrypi.server.models.entities.Product;
+import com.moksha.raspberrypi.server.models.entities.Quantity;
 import com.moksha.raspberrypi.server.models.entities.fvo.backend.ActiveAccounts;
 import com.moksha.raspberrypi.server.models.entities.fvo.backend.MaterializedCollection;
 import com.moksha.raspberrypi.server.models.entities.fvo.backend.MaterializedFSN;
@@ -22,7 +24,9 @@ import com.moksha.raspberrypi.server.models.entities.fvo.backend.MaterializedFSN
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import io.dropwizard.db.DataSourceFactory;
@@ -34,7 +38,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
 
     GCPConnectService gcpConnectService = new GCPConnectService();
 
-    FkAction getFKDetails = new FkAction();
+    FkAction fkAction = new FkAction();
 
     ActiveAccountsDAO activeAccountsDAO;
 
@@ -126,9 +130,9 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
 
                 CollectionRequest collectionRequest = new CollectionRequest(listId, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
                 /*try {
-                    final CollectionResponse collection = getFKDetails.createCollection(collectionRequest);
+                    final CollectionResponse collection = fkAction.createCollection(collectionRequest);
                     final String collectionId = collection.getCollectionId();
-                    final String collectionUrl = getFKDetails.getCollectionUrl(collectionId);*/
+                    final String collectionUrl = fkAction.getCollectionUrl(collectionId);*/
 
                     final String collectionId = "0bselsmaur";
                     final String collectionUrl = "https://www.flipkart.com/all/~cs-0bselsmaur/pr?sid=all";
@@ -156,11 +160,11 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 final String listIdAddItem = userAction.getListId();
                 try {
                     final String itemQuery = actionValue;
-                    final List<Product> products = getFKDetails.searchKeyWordsAndReturnProducts(itemQuery);
+                    final List<Product> products = fkAction.searchKeyWordsAndReturnProducts(itemQuery);
                     final Product product = products.get(0);
                     final String productId = product.getProductId();
                     final String listingId = product.getListingId();
-                    final String productTitle = product.getProductTitle() == null ? itemQuery : product.getProductTitle();
+                    final String productTitle = product.getProductTitle() == null ? itemQuery : product.getProductTitle().toLowerCase();
 
                     final MaterializedCollection materializedCollectionToBeUpdated = materializedCollectionDAO.getMaterializedCollection(fkAccountId, listIdAddItem);
 
@@ -184,6 +188,8 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 }
                 break;
             case REMOVE_ITEM_FROM_LIST:
+                HSession hSession = new HSession();
+                hSession.openWithSeparateTransaction();
 
                 final MaterializedCollection materializedCollectionToBeUpdated = materializedCollectionDAO.getMaterializedCollection(fkAccountId, listId);
 
@@ -196,8 +202,10 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 if(isAbleToRemoveProductFromCollection(materializedCollectionToBeUpdated, searchedFsnIds)) {
                     materializedFSNListItemSearch
                             .stream().forEach(materializedFSN -> {
-                                materializedFSNDAO.delete(materializedFSN.getId());
-                    });
+                                materializedFSNDAO.delete(materializedFSN);
+                                hSession.commit();
+                                hSession.close();
+                            });
                     userAction.setDone(true);
                     userAction.setTalkBackText(actionValue + " Removed from List");
                 }
@@ -205,6 +213,20 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 break;
             case ADD_LIST_TO_BASKET:
                 final List<MaterializedFSN> materializedFSNList = materializedFSNDAO.getMaterializedFSNListItemSearch(fkAccountId, listId);
+                String securityToken = activeAccountsDAO.getSecurityToken(fkAccountId);
+                Map<String,Quantity> map = new HashMap<>();
+                materializedFSNList.forEach(materializedFSN -> map.put(materializedFSN.getListingId(), new Quantity(1)));
+                CartContext cartContext = new CartContext(map);
+                try {
+                    final boolean success = fkAction.addToGroceryBucket(securityToken, cartContext);
+                    if(success) {
+                        userAction.setDone(true);
+                        userAction.setTalkBackText(actionValue + " List Added to Basket!");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
 
                 break;
             case SEND_LIST_TO_PN:
@@ -216,7 +238,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 PNRequest pnRequest = new PNRequest(materializedCollectionToSend.getUrl(),Arrays.asList(deviceId));
 
                 try {
-                    final boolean success = getFKDetails.pushNotification(pnRequest);
+                    final boolean success = fkAction.pushNotification(pnRequest);
                     if(success) {
                         userAction.setDone(true);
                         userAction.setTalkBackText(actionValue + " List send to Device!");
@@ -236,7 +258,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
         CollectionRequest collectionRequest = new CollectionRequest(Arrays.asList(productId) , Collections.EMPTY_LIST);
 
         try {
-            return getFKDetails.updateCollection(collectionRequest, collectionId);
+            return fkAction.updateCollection(collectionRequest, collectionId);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -250,7 +272,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
         CollectionRequest collectionRequest = new CollectionRequest(Collections.EMPTY_LIST , productIds);
 
         try {
-            return getFKDetails.updateCollection(collectionRequest, collectionId);
+            return fkAction.updateCollection(collectionRequest, collectionId);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -28,4 +28,15 @@ public class ActiveAccountsDAO extends HDao<ActiveAccounts> {
         }
         return null;
     }
+
+    public String getSecurityToken(String fkAccountId) {
+        Criteria criteria = this.currentSession().createCriteria(ActiveAccounts.class);
+        criteria.add(Restrictions.eq("fkAccountId", fkAccountId));
+        final List list2 = criteria.list();
+        final List<ActiveAccounts> list = list2;
+        if (list != null && list.size() > 0) {
+            return list.get(0).getSecurityToken();
+        }
+        return null;
+    }
 }

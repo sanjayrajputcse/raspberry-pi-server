@@ -30,4 +30,7 @@ public class ActiveAccounts {
     @Column(name = "device_id")
     private String deviceId;
 
+    @Column(name = "security_token")
+    private String securityToken;
+
 }

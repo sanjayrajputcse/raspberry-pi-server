@@ -11,10 +11,6 @@ import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.Root;
-
 public class MaterializedFSNDAO extends HDao<MaterializedFSN> {
 
     @Inject
@@ -33,7 +29,8 @@ public class MaterializedFSNDAO extends HDao<MaterializedFSN> {
     public boolean delete(Long id){
         Criteria criteria = this.currentSession().createCriteria(MaterializedFSN.class);
         criteria.add(Restrictions.eq("id", id));
-        CriteriaBuilder cb = this.currentSession().getCriteriaBuilder();
+        this.currentSession().delete(criteria.list().get(0));
+        /*CriteriaBuilder cb = this.currentSession().getCriteriaBuilder();
 
         // create delete
         CriteriaDelete<MaterializedFSN> delete = cb.
@@ -49,7 +46,8 @@ public class MaterializedFSNDAO extends HDao<MaterializedFSN> {
         final int returnStatus = this.currentSession().createQuery(delete).executeUpdate();
 
         return 0 == returnStatus ? false : true;
-
+    */
+        return true;
 
     }
 
