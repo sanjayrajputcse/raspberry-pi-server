@@ -1,7 +1,9 @@
 package com.moksha.raspberrypi.server.InternalClient;
 
 import com.moksha.raspberrypi.server.fkService.CollectionService;
+import com.moksha.raspberrypi.server.fkService.PNService;
 import com.moksha.raspberrypi.server.fkService.SearchService;
+import com.moksha.raspberrypi.server.models.PNRequest;
 import com.moksha.raspberrypi.server.models.entities.CollectionRequest;
 import com.moksha.raspberrypi.server.models.entities.CollectionResponse;
 import com.moksha.raspberrypi.server.models.entities.Product;
@@ -45,7 +47,7 @@ public class FkAction implements Action {
     }
 
     @Override
-    public boolean pushNotification() {
-        return false;
+    public boolean pushNotification(PNRequest pnRequest) {
+        return new PNService().sendPushNotification(pnRequest);
     }
 }
