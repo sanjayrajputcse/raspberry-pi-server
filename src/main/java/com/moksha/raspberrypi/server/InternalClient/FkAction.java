@@ -45,7 +45,7 @@ public class FkAction implements Action {
     }
 
     @Override
-    public boolean pushNotification() {
+    public boolean pushNotification(String collectionUrl, List<String> deviceId ) {
         return false;
     }
 }
