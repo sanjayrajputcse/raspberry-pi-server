@@ -189,7 +189,6 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
 
                 List<MaterializedFSN> materializedFSNListItemSearch = materializedFSNDAO.getMaterializedFSNListItemSearch(fkAccountId, actionValue);
 
-
                 final List<String> searchedFsnIds = materializedFSNListItemSearch
                         .stream().map(materializedFSN -> materializedFSN.getFsnId())
                         .collect(Collectors.toList());
