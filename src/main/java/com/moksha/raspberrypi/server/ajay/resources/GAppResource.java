@@ -172,11 +172,13 @@ public class GAppResource {
 
     @GET
     @UnitOfWork
-    @Path("/updateTaskStatus")
+    @Path("/updateTask")
     public boolean updateTaskStatus(@QueryParam("action_id") long actionId,
+                                    @QueryParam("talk_back_text") String talkBackText,
                                     @Context ContainerRequestContext crc) throws Exception {
         UserAction userAction = userActionDAO.get(actionId);
         userAction.setDone(true);
+        userAction.setTalkBackText(talkBackText);
         return userAction.isDone();
     }
 }
