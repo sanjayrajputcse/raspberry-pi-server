@@ -97,6 +97,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 int retryCount = 0;
                 UserAction processedUserAction = null;
                 while(retryCount++ < 3 && !userAction.isDone()) {
+                    System.out.println("Processing: "+ userAction.toString());
                     processedUserAction = processUserAction(userAction);
                 }
                 if(processedUserAction == null){
@@ -108,6 +109,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                     try {
                         hsession.commit();
                         gcpConnectService.setStatusAndDesc(processedUserAction.getId(), processedUserAction.getTalkBackText());
+                        System.out.println("Processed: "+ processedUserAction.toString());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -123,7 +125,9 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
         final String actionNameString = userAction.getActionName();
         final Action action = Action.getActionFromString(actionNameString);
         final String fkAccountId = userAction.getFkAccountId();
+        final String deviceId = activeAccountsDAO.getDeviceId(fkAccountId);
         final String actionValue = userAction.getActionValue();
+        final String securityToken = activeAccountsDAO.getSecurityToken(fkAccountId);
         final String listId = userAction.getListId();
         switch (action){
             case CREATE_LIST:
@@ -213,7 +217,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 break;
             case ADD_LIST_TO_BASKET:
                 final List<MaterializedFSN> materializedFSNList = materializedFSNDAO.getMaterializedFSNListItemSearch(fkAccountId, listId);
-                String securityToken = activeAccountsDAO.getSecurityToken(fkAccountId);
+
                 Map<String,Quantity> map = new HashMap<>();
                 materializedFSNList.forEach(materializedFSN -> map.put(materializedFSN.getListingId(), new Quantity(1)));
                 CartContext cartContext = new CartContext(map);
@@ -227,16 +231,23 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                     e.printStackTrace();
                 }
 
+                final String basketViewURL = fkAction.getBasketViewURL();
 
+
+                String pnTitle = "Here is your basket";
+                try {
+                    fkAction.pushNotification(new PNRequest(basketViewURL, Arrays.asList(deviceId), pnTitle));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
                 break;
             case SEND_LIST_TO_PN:
                 final String sendToDeviceListId = userAction.getListId();
                 final String currentAccountId = userAction.getFkAccountId();
-                final String deviceId = activeAccountsDAO.getDeviceId(currentAccountId);
                 final MaterializedCollection materializedCollectionToSend = materializedCollectionDAO.getMaterializedCollection(currentAccountId, sendToDeviceListId);
 
-                String pnTitle = "Here is your grocery list " + materializedCollectionToSend.getListName();
+                pnTitle = "Here is your grocery list: " + materializedCollectionToSend.getListName();
                 PNRequest pnRequest = new PNRequest(materializedCollectionToSend.getUrl(), Arrays.asList(deviceId), pnTitle);
 
                 try {
@@ -245,6 +256,13 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                         userAction.setDone(true);
                         userAction.setTalkBackText(actionValue + " List send to Device!");
                     }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case EMPTY_BASKET:
+                try {
+                    fkAction.removeGroceryBasket(securityToken);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

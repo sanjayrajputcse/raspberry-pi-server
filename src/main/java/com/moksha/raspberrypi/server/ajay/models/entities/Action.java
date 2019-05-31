@@ -10,6 +10,7 @@ public enum Action {
     REMOVE_ITEM_FROM_LIST("removeItemFromList"),
     SEND_LIST_TO_PN("sendListToPN"),
     ADD_LIST_TO_BASKET("addListToBasket"),
+    EMPTY_BASKET("emptyBasket"),
     INVALID("invalid");
 
     String value;
