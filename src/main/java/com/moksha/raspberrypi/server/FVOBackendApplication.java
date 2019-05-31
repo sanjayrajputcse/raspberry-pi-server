@@ -120,9 +120,9 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
         final Action action = Action.getActionFromString(actionNameString);
         final String fkAccountId = userAction.getFkAccountId();
         final String actionValue = userAction.getActionValue();
+        final String listId = userAction.getListId();
         switch (action){
             case CREATE_LIST:
-                final String listId = userAction.getListId();
 
                 CollectionRequest collectionRequest = new CollectionRequest(listId, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
                 /*try {
@@ -148,8 +148,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 }*/
                 break;
             case REMOVE_LIST:
-                final String removeListId = userAction.getListId();
-                final MaterializedCollection materializedCollectionToRemove = materializedCollectionDAO.getMaterializedCollection(fkAccountId, removeListId);
+                final MaterializedCollection materializedCollectionToRemove = materializedCollectionDAO.getMaterializedCollection(fkAccountId, listId);
                 final String collectionIdToBeRemoved = materializedCollectionToRemove.getCollectionId();
                 // stub to be implemented later.
                 break;
@@ -160,6 +159,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                     final List<Product> products = getFKDetails.searchKeyWordsAndReturnProducts(itemQuery);
                     final Product product = products.get(0);
                     final String productId = product.getProductId();
+                    final String listingId = product.getListingId();
                     final String productTitle = product.getProductTitle() == null ? itemQuery : product.getProductTitle();
 
                     final MaterializedCollection materializedCollectionToBeUpdated = materializedCollectionDAO.getMaterializedCollection(fkAccountId, listIdAddItem);
@@ -171,6 +171,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                         materializedFSN.setFsnName(productTitle);
                         materializedFSN.setListItem(itemQuery);
                         materializedFSN.setListName(listIdAddItem);
+                        materializedFSN.setListingId(listingId);
 
                         materializedFSNDAO.create(materializedFSN);
 
@@ -183,9 +184,8 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 }
                 break;
             case REMOVE_ITEM_FROM_LIST:
-                final String listIdRemoveItem = userAction.getListId();
 
-                final MaterializedCollection materializedCollectionToBeUpdated = materializedCollectionDAO.getMaterializedCollection(fkAccountId, listIdRemoveItem);
+                final MaterializedCollection materializedCollectionToBeUpdated = materializedCollectionDAO.getMaterializedCollection(fkAccountId, listId);
 
                 List<MaterializedFSN> materializedFSNListItemSearch = materializedFSNDAO.getMaterializedFSNListItemSearch(fkAccountId, actionValue);
 
@@ -196,11 +196,15 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 if(isAbleToRemoveProductFromCollection(materializedCollectionToBeUpdated, searchedFsnIds)) {
                     materializedFSNListItemSearch
                             .stream().forEach(materializedFSN -> {
-                                materializedFSNDAO.delete(materializedFSN);
+                                materializedFSNDAO.delete(materializedFSN.getId());
                     });
                     userAction.setDone(true);
                     userAction.setTalkBackText(actionValue + " Removed from List");
                 }
+
+                break;
+            case ADD_LIST_TO_BASKET:
+                final List<MaterializedFSN> materializedFSNList = materializedFSNDAO.getMaterializedFSNListItemSearch(fkAccountId, listId);
 
                 break;
             case SEND_LIST_TO_PN:
@@ -212,7 +216,6 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 PNRequest pnRequest = new PNRequest(materializedCollectionToSend.getUrl(),Arrays.asList(deviceId));
 
                 try {
-
                     final boolean success = getFKDetails.pushNotification(pnRequest);
                     if(success) {
                         userAction.setDone(true);
@@ -233,8 +236,8 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
         CollectionRequest collectionRequest = new CollectionRequest(Arrays.asList(productId) , Collections.EMPTY_LIST);
 
         try {
-            getFKDetails.updateCollection(collectionRequest, collectionId);
-            return true;
+            return getFKDetails.updateCollection(collectionRequest, collectionId);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -247,8 +250,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
         CollectionRequest collectionRequest = new CollectionRequest(Collections.EMPTY_LIST , productIds);
 
         try {
-            getFKDetails.updateCollection(collectionRequest, collectionId);
-            return true;
+            return getFKDetails.updateCollection(collectionRequest, collectionId);
         } catch (IOException e) {
             e.printStackTrace();
         }

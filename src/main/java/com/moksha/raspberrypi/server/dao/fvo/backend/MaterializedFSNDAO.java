@@ -11,6 +11,10 @@ import org.hibernate.criterion.Restrictions;
 
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.Root;
+
 public class MaterializedFSNDAO extends HDao<MaterializedFSN> {
 
     @Inject
@@ -26,28 +30,27 @@ public class MaterializedFSNDAO extends HDao<MaterializedFSN> {
         return list;
     }
 
-    public MaterializedFSN getMaterializedFSN(String fkAccountId, String listName, String listItem) {
+    public boolean delete(Long id){
         Criteria criteria = this.currentSession().createCriteria(MaterializedFSN.class);
-        criteria.add(Restrictions.eq("fkAccountId", fkAccountId));
-        criteria.add(Restrictions.eq("listName", listName));
-        criteria.add(Restrictions.eq("listItem", listItem));
-        final List list = criteria.list();
-        if(list != null && list.size()>0){
-            return (MaterializedFSN) list.get(0);
-        }
-        return null;
-    }
+        criteria.add(Restrictions.eq("id", id));
+        CriteriaBuilder cb = this.currentSession().getCriteriaBuilder();
 
-    public MaterializedFSN getMaterializedFSNUsingFSNID(String fkAccountId, String listName, String fsnId) {
-        Criteria criteria = this.currentSession().createCriteria(MaterializedFSN.class);
-        criteria.add(Restrictions.eq("fkAccountId", fkAccountId));
-        criteria.add(Restrictions.eq("listName", listName));
-        criteria.add(Restrictions.eq("fsnId", fsnId));
-        final List list = criteria.list();
-        if(list != null && list.size()>0){
-            return (MaterializedFSN) list.get(0);
-        }
-        return null;
+        // create delete
+        CriteriaDelete<MaterializedFSN> delete = cb.
+                createCriteriaDelete(MaterializedFSN.class);
+
+        // set the root class
+        Root e = delete.from(MaterializedFSN.class);
+
+        // set where clause
+        delete.where(cb.equal(e.get("id"), id));
+
+        // perform update
+        final int returnStatus = this.currentSession().createQuery(delete).executeUpdate();
+
+        return 0 == returnStatus ? false : true;
+
+
     }
 
     public List<MaterializedFSN> getMaterializedFSNListItemSearch(String fkAccountId, String listItem) {
