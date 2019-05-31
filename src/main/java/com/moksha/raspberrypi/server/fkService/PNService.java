@@ -1,5 +1,7 @@
 package com.moksha.raspberrypi.server.fkService;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -8,24 +10,28 @@ import com.moksha.raspberrypi.server.models.PNRequest;
 import com.mysql.jdbc.StringUtils;
 import okhttp3.*;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by somil.jain on 31/05/19.
  */
 public class PNService {
-    String HOST = "http://10.47.0.120";
-    String API = "/v2/send/push/unknown/retailapp";
-    OkHttpClient client ;
+    private final String HOST = "http://10.47.0.120";
+    private final String API = "/v2/send/push/unknown/retailapp";
+    private final OkHttpClient client ;
+    private final ObjectMapper objectMapper;
 
     public PNService() {
         client = new OkHttpClient();
+        objectMapper = new ObjectMapper();
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     public boolean sendPushNotification(PNRequest pnRequest) throws IOException {
         try {
             File file = new File(getClass().getClassLoader().getResource("local/PNRequestData.json").getFile());
-            ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(file);
             updateId(jsonNode);
             JsonNode channelInfo = jsonNode.get("channelInfo");

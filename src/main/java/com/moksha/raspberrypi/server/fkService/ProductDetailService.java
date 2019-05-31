@@ -43,8 +43,10 @@ public class ProductDetailService {
             responseBody = response.body().string();
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(responseBody);
+//            String title = jsonNode.get("entityViews").get(0)
+//                    .get("view").get("titles").get("view_title").get("title").asText();
             String title = jsonNode.get("entityViews").get(0)
-                    .get("view").get("titles").get("view_title").get("title").asText();
+                    .get("view").get("titles").get("w3_title").asText();
             return title;
         }
         catch (Exception e)

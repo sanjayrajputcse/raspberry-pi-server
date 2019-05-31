@@ -15,15 +15,13 @@ import java.io.IOException;
  */
 public class CollectionService {
 
-    String METHOD_GET = "GET";
-    String METHOD_POST = "POST";
-    String HOST = "http://10.47.7.31";
-    String CREATE_API = "/collection-service/v0/collection";
-    String SUBMIT_API = "/collection-service/v0/collection/submit/";
-    String UPDATE_API = "/collection-service/v0/collection/large-adhoc/";
+    private final String HOST = "http://10.47.7.31";
+    private final String CREATE_API = "/collection-service/v0/collection";
+    private final String SUBMIT_API = "/collection-service/v0/collection/submit/";
+    private final String UPDATE_API = "/collection-service/v0/collection/large-adhoc/";
 
-    OkHttpClient client;
-    ObjectMapper objectMapper;
+    private final OkHttpClient client;
+    private final ObjectMapper objectMapper;
 
     public CollectionService() throws IOException {
 
