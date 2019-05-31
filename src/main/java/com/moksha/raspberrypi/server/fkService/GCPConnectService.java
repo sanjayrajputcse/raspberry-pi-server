@@ -32,7 +32,7 @@ public class GCPConnectService {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    public List<UserAction> getAllPendingUserActions() throws IOException {
+    public List<UserAction> getAllPendingUserActions(){
         List<UserAction> userActions = Collections.EMPTY_LIST;
         String url = HOST + GET_POLL_API ;
         Request request = new Request.Builder()
@@ -55,8 +55,8 @@ public class GCPConnectService {
 
     public void setStatusAndDesc(long action_id, String talkBackText) throws IOException {
         String url = HOST + GET_UPDATE_API ;
-        StringUtils.replace(url,"{action_id}",String.valueOf(action_id));
-        StringUtils.replace(url,"{talk_back_text}",String.valueOf(talkBackText));
+        url = StringUtils.replace(url,"{action_id}",String.valueOf(action_id));
+        url = StringUtils.replace(url,"{talk_back_text}",String.valueOf(talkBackText));
         Request request = new Request.Builder()
                 .url(url)
                 .build();

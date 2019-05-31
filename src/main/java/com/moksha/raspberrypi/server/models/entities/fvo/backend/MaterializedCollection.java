@@ -14,12 +14,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Table(name = "materialized_collections")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class MaterializedCollection extends AbstractTimeEntity {
@@ -31,9 +33,6 @@ public class MaterializedCollection extends AbstractTimeEntity {
 
     @Column(name = "fk_account_id")
     private String fkAccountId;
-
-    @Column(name = "description")
-    private String device_id;
 
     @Column(name = "list_name")
     private String listName;
