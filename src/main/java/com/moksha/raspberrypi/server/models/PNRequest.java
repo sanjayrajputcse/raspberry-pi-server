@@ -10,5 +10,11 @@ import java.util.List;
 @Data
 public class PNRequest {
     String collectionUrl;
-    List<String> deviceId;
+    List<String> deviceIds;
+    String pnTitle;
+
+    public PNRequest(String collectionUrl, List<String> deviceIds) {
+        this.collectionUrl = collectionUrl;
+        this.deviceIds = deviceIds;
+    }
 }

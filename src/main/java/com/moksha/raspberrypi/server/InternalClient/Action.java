@@ -5,6 +5,7 @@ import com.moksha.raspberrypi.server.models.entities.CollectionRequest;
 import com.moksha.raspberrypi.server.models.entities.CollectionResponse;
 import com.moksha.raspberrypi.server.models.entities.Product;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -17,6 +18,6 @@ public interface Action {
     public CollectionResponse createCollection(CollectionRequest collectionRequest) throws IOException;
     public boolean updateCollection(CollectionRequest collectionRequest, String collectionId) throws IOException;
     public String getCollectionUrl(String collectionId);
-    public boolean pushNotification(PNRequest pnRequest);
+    public boolean pushNotification(PNRequest pnRequest) throws IOException;
 
 }

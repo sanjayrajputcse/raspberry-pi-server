@@ -9,6 +9,7 @@ import com.moksha.raspberrypi.server.models.entities.CollectionResponse;
 import com.moksha.raspberrypi.server.models.entities.Product;
 import lombok.Data;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class FkAction implements Action {
     }
 
     @Override
-    public boolean pushNotification(PNRequest pnRequest) {
+    public boolean pushNotification(PNRequest pnRequest) throws IOException {
         return new PNService().sendPushNotification(pnRequest);
     }
 }
