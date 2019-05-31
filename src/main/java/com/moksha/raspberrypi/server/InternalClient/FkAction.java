@@ -11,7 +11,6 @@ import com.moksha.raspberrypi.server.models.entities.CollectionResponse;
 import com.moksha.raspberrypi.server.models.entities.Product;
 import lombok.Data;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -67,5 +66,10 @@ public class FkAction implements Action {
     @Override
     public boolean removeGroceryBasket(String sn) throws IOException {
         return new GroceryBasketService().removeBasket(sn);
+    }
+
+    @Override
+    public String getBasketViewURL() {
+        return "https://www.flipkart.com/viewcart";
     }
 }

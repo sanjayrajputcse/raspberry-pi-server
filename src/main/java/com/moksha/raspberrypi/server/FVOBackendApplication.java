@@ -213,7 +213,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 final String deviceId = activeAccountsDAO.getDeviceId(currentAccountId);
                 final MaterializedCollection materializedCollectionToSend = materializedCollectionDAO.getMaterializedCollection(currentAccountId, sendToDeviceListId);
 
-                PNRequest pnRequest = new PNRequest(materializedCollectionToSend.getUrl(),Arrays.asList(deviceId));
+                PNRequest pnRequest = new PNRequest(materializedCollectionToSend.getUrl(),Arrays.asList(deviceId),"udpate");
 
                 try {
                     final boolean success = getFKDetails.pushNotification(pnRequest);

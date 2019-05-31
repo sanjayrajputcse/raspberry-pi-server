@@ -13,8 +13,9 @@ public class PNRequest {
     List<String> deviceIds;
     String pnTitle;
 
-    public PNRequest(String collectionUrl, List<String> deviceIds) {
+    public PNRequest(String collectionUrl, List<String> deviceIds, String pnTitle) {
         this.collectionUrl = collectionUrl;
         this.deviceIds = deviceIds;
+        this.pnTitle = pnTitle;
     }
 }

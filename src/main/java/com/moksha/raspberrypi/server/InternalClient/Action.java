@@ -6,7 +6,6 @@ import com.moksha.raspberrypi.server.models.entities.CollectionRequest;
 import com.moksha.raspberrypi.server.models.entities.CollectionResponse;
 import com.moksha.raspberrypi.server.models.entities.Product;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -23,5 +22,7 @@ public interface Action {
     public boolean addToGroceryBasket(String sn, CartContext cartContext) throws IOException;
     public boolean removeListingFromGroceryBasket(String sn, String listingId) throws IOException;
     public boolean removeGroceryBasket(String sn) throws IOException;
+    public String getBasketViewURL();
+
 
 }
