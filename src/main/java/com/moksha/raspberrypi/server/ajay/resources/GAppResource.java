@@ -48,11 +48,12 @@ public class GAppResource {
     @GET
     @UnitOfWork
     @Path("/doAction")
-    public long doAction(@QueryParam("fk_account_id") String fkAccountId,
-                         @QueryParam("action_name") String actionName,
+    public long doAction(@QueryParam("action_name") String actionName,
                          @QueryParam("action_value") String actionValue,
                          @QueryParam("list_id") String listId,
                          @Context ContainerRequestContext crc) throws Exception {
+
+        String fkAccountId = userAccountDAO.getUserAccount().getFkAccountId();
 
         Action action = Action.getActionFromString(actionName);
         if (action == Action.INVALID)
@@ -124,18 +125,18 @@ public class GAppResource {
     @GET
     @UnitOfWork
     @Path("/showLists")
-    public List<ListDetail> showLists(@QueryParam("fk_account_id") String fkAccountId,
-                                      @Context ContainerRequestContext crc) throws Exception {
-
+    public List<ListDetail> showLists(@Context ContainerRequestContext crc) throws Exception {
+        String fkAccountId = userAccountDAO.getUserAccount().getFkAccountId();
         return listDetailDAO.getAll(fkAccountId);
     }
 
     @GET
     @UnitOfWork
     @Path("/sendListToPN/")
-    public long sendListToPN(@QueryParam("list_id") String listId, @QueryParam("fk_account_id") String fkAccountId,
+    public long sendListToPN(@QueryParam("list_id") String listId,
                              @Context ContainerRequestContext crc) throws Exception {
 
+        String fkAccountId = userAccountDAO.getUserAccount().getFkAccountId();
         UserAction sendListToDeviceUserAction = new UserAction();
         sendListToDeviceUserAction.setFkAccountId(fkAccountId);
         sendListToDeviceUserAction.setActionName(Action.SEND_LIST_TO_PN.getValue());
