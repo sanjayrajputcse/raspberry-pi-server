@@ -18,7 +18,8 @@ import java.io.IOException;
 public class GroceryBasketService {
 
     private final String ADD_ENDPOINT = "https://www.flipkart.com/api/1/cart/browse";
-    private final String DELETE_ENDPOINT = "https://www.flipkart.com/api/5/cart?listingIds={lId}&view=GROCERY";
+    private final String DELETE_LISTING_ENDPOINT = "https://www.flipkart.com/api/5/cart?listingIds={lId}&view=GROCERY";
+    private final String REMOVE_BASKET = "https://www.flipkart.com/api/5/cart?marketplaceIds=GROCERY&view=ALL";
     private final String sn = "2.VI3D6B8E9C91374DD2A1869734A80E0C6C.SIFA609D7B68984EA7A89455B417AD3F07.VS830A0FA54A1B420B9E8863D0B634C8F1.1559270587";
     private final String st = "SIFA609D7B68984EA7A89455B417AD3F07:VI3D6B8E9C91374DD2A1869734A80E0C6C";
     private final String XUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36 FKUA/website/42/website/Desktop";
@@ -58,11 +59,19 @@ public class GroceryBasketService {
         if (StringUtils.isNullOrEmpty(sn)) {
             sn = this.sn;
         }
-        String deleteUrl = org.apache.commons.lang3.StringUtils.replace(DELETE_ENDPOINT, "{lId}", listingId);
-        return delete(sn ,deleteUrl, listingId);
+        String deleteUrl = org.apache.commons.lang3.StringUtils.replace(DELETE_LISTING_ENDPOINT, "{lId}", listingId);
+        return delete(sn ,deleteUrl);
     }
 
-    private boolean delete(String sn, String deleteUrl, String listingId) throws IOException {
+    public boolean removeBasket(String sn) throws IOException {
+        if(StringUtils.isNullOrEmpty(sn))
+        {
+            sn = this.sn;
+        }
+        return delete(sn ,REMOVE_BASKET);
+    }
+
+    private boolean delete(String sn, String deleteUrl) throws IOException {
         boolean deleted = false;
         try {
             Request request = new Request.Builder()
@@ -75,7 +84,7 @@ public class GroceryBasketService {
             deleted = client.newCall(request).execute().isSuccessful();
         }catch (Exception e)
         {
-            System.out.println("Unable to remove listing : "+ listingId);
+            System.out.println("Unable to remove listing");
         }
         return deleted;
     }

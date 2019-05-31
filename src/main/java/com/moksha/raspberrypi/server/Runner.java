@@ -43,6 +43,7 @@ public class Runner {
         CartContext cartContext1 = new CartContext(cartContext);
         GroceryBasketService groceryBasketService = new GroceryBasketService();
         groceryBasketService.addListingToMyCart(null,cartContext1);
-        groceryBasketService.removeListingFromGroceryBucket(null,"LSTTPSFDXD6ZVQSXMUSODPSAL");
+        groceryBasketService.removeBasket(null);
+//        groceryBasketService.removeListingFromGroceryBucket(null,"LSTTPSFDXD6ZVQSXMUSODPSAL");
     }
 }
