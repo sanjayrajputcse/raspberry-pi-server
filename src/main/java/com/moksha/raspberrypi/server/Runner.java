@@ -1,17 +1,14 @@
 package com.moksha.raspberrypi.server;
 
 import com.moksha.raspberrypi.server.InternalClient.FkAction;
+import com.moksha.raspberrypi.server.fkService.GroceryBasketService;
 import com.moksha.raspberrypi.server.fkService.PNService;
 import com.moksha.raspberrypi.server.fkService.ProductDetailService;
 import com.moksha.raspberrypi.server.models.PNRequest;
-import com.moksha.raspberrypi.server.models.entities.CollectionRequest;
-import com.moksha.raspberrypi.server.models.entities.CollectionResponse;
-import com.moksha.raspberrypi.server.models.entities.Product;
+import com.moksha.raspberrypi.server.models.entities.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by somil.jain on 30/05/19.
@@ -35,11 +32,16 @@ public class Runner {
 //        System.out.println("updated " + updated);
 //        System.out.println(getFKDetails.getCollectionUrl(collectionId));
 
-        System.out.println("\n product title "+ new ProductDetailService().getProductTitle("HOLF8WHUEFDBRXF4"));
-        List<String> deviceList = new ArrayList<>(Arrays.asList("17ca9de766aedc444c4b8574e143c3e5", "01d929401523ad5b6faa756e3b648446", "9c41fef0884f9ab8b0ecc1da921d71bb"));
-        PNRequest pnRequest = new PNRequest("https://www.flipkart.com/", deviceList);
-        pnRequest.setPnTitle("Hahhahahahahhahah");
-        PNService pnService = new PNService();
-        pnService.sendPushNotification(pnRequest);
+//        System.out.println("\n product title "+ new ProductDetailService().getProductTitle("HOLF8WHUEFDBRXF4"));
+//        List<String> deviceList = new ArrayList<>(Arrays.asList("17ca9de766aedc444c4b8574e143c3e5", "01d929401523ad5b6faa756e3b648446", "9c41fef0884f9ab8b0ecc1da921d71bb"));
+//        PNRequest pnRequest = new PNRequest("https://www.flipkart.com/", deviceList);
+//        pnRequest.setPnTitle("Hahhahahahahhahah");
+//        PNService pnService = new PNService();
+//        pnService.sendPushNotification(pnRequest);
+        HashMap<String, Quantity> cartContext = new HashMap<>();
+        cartContext.put("LSTTPSFDXD6ZVQSXMUSODPSAL",new Quantity(2));
+        CartContext cartContext1 = new CartContext(cartContext);
+        GroceryBasketService groceryBasketService = new GroceryBasketService();
+        groceryBasketService.addListingToMyCart(null,cartContext1);
     }
 }

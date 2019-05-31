@@ -1,9 +1,11 @@
 package com.moksha.raspberrypi.server.InternalClient;
 
 import com.moksha.raspberrypi.server.fkService.CollectionService;
+import com.moksha.raspberrypi.server.fkService.GroceryBasketService;
 import com.moksha.raspberrypi.server.fkService.PNService;
 import com.moksha.raspberrypi.server.fkService.SearchService;
 import com.moksha.raspberrypi.server.models.PNRequest;
+import com.moksha.raspberrypi.server.models.entities.CartContext;
 import com.moksha.raspberrypi.server.models.entities.CollectionRequest;
 import com.moksha.raspberrypi.server.models.entities.CollectionResponse;
 import com.moksha.raspberrypi.server.models.entities.Product;
@@ -50,5 +52,10 @@ public class FkAction implements Action {
     @Override
     public boolean pushNotification(PNRequest pnRequest) throws IOException {
         return new PNService().sendPushNotification(pnRequest);
+    }
+
+    @Override
+    public boolean addToGroceryBucket(String sn, CartContext cartContext) throws IOException {
+        return new GroceryBasketService().addListingToMyCart(sn, cartContext);
     }
 }
