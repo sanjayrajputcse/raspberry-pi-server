@@ -6,14 +6,15 @@ import com.moksha.raspberrypi.server.InternalClient.FkAction;
 import com.moksha.raspberrypi.server.ajay.models.entities.Action;
 import com.moksha.raspberrypi.server.ajay.models.entities.UserAction;
 import com.moksha.raspberrypi.server.dao.GuiceInjector;
+import com.moksha.raspberrypi.server.dao.HSession;
 import com.moksha.raspberrypi.server.dao.fvo.backend.ActiveAccountsDAO;
 import com.moksha.raspberrypi.server.dao.fvo.backend.MaterializedCollectionDAO;
 import com.moksha.raspberrypi.server.dao.fvo.backend.MaterializedFSNDAO;
 import com.moksha.raspberrypi.server.filters.RequestFilter;
 import com.moksha.raspberrypi.server.fkService.GCPConnectService;
 import com.moksha.raspberrypi.server.models.entities.CollectionRequest;
-import com.moksha.raspberrypi.server.models.entities.CollectionResponse;
 import com.moksha.raspberrypi.server.models.entities.Product;
+import com.moksha.raspberrypi.server.models.entities.fvo.backend.ActiveAccounts;
 import com.moksha.raspberrypi.server.models.entities.fvo.backend.MaterializedCollection;
 import com.moksha.raspberrypi.server.models.entities.fvo.backend.MaterializedFSN;
 
@@ -49,7 +50,7 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
         return "FVO Backend Server";
     }
 
-    private final HibernateBundle<RPiConfiguration> hibernate = new HibernateBundle<RPiConfiguration>(MaterializedFSN.class, MaterializedCollection.class) {
+    private final HibernateBundle<RPiConfiguration> hibernate = new HibernateBundle<RPiConfiguration>(MaterializedFSN.class, MaterializedCollection.class, ActiveAccounts.class) {
         @Override
         public DataSourceFactory getDataSourceFactory(RPiConfiguration piConfiguration) {
             return piConfiguration.getDatabase();
@@ -78,6 +79,9 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
             // fetch actions from fvo thin server
             // createList, addItem, removeItem, deleteList, sendListToDevice
 
+            HSession hsession = new HSession();
+            hsession.openWithTransaction();
+
             final List<UserAction> allPendingUserActions = gcpConnectService.getAllPendingUserActions();
 
             if(allPendingUserActions.isEmpty()){
@@ -97,12 +101,15 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                 }
                 if (processedUserAction.isDone()) {
                     try {
+                        hsession.commit();
                         gcpConnectService.setStatusAndDesc(processedUserAction.getId(), processedUserAction.getTalkBackText());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             });
+            hsession.commit();
+            hsession.close();
             Thread.sleep(500);
         }
     }
@@ -111,21 +118,22 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
         final String actionNameString = userAction.getActionName();
         final Action action = Action.getActionFromString(actionNameString);
         final String fkAccountId = userAction.getFkAccountId();
-        final String deviceId = activeAccountsDAO.getDeviceId(fkAccountId);
         final String actionValue = userAction.getActionValue();
         switch (action){
             case CREATE_LIST:
                 final String listId = userAction.getListId();
 
                 CollectionRequest collectionRequest = new CollectionRequest(listId, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
-                try {
+                /*try {
                     final CollectionResponse collection = getFKDetails.createCollection(collectionRequest);
                     final String collectionId = collection.getCollectionId();
-                    final String collectionUrl = getFKDetails.getCollectionUrl(collectionId);
+                    final String collectionUrl = getFKDetails.getCollectionUrl(collectionId);*/
+
+                    final String collectionId = "0bselsmaur";
+                    final String collectionUrl = "https://www.flipkart.com/all/~cs-0bselsmaur/pr?sid=all";
 
                     MaterializedCollection materializedCollection = new MaterializedCollection();
                     materializedCollection.setFkAccountId(fkAccountId);
-                    materializedCollection.setDevice_id(deviceId);
                     materializedCollection.setListName(listId);
                     materializedCollection.setUrl(collectionUrl);
                     materializedCollection.setCollectionId(collectionId);
@@ -134,14 +142,14 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
 
                     userAction.setDone(true);
                     userAction.setTalkBackText(listId + " shopping list created!");
-                } catch (IOException e) {
+                /*} catch (IOException e) {
                     e.printStackTrace();
-                }
+                }*/
                 break;
             case REMOVE_LIST:
                 final String removeListId = userAction.getListId();
-                final MaterializedCollection materializedCollection = materializedCollectionDAO.getMaterializedCollection(fkAccountId, removeListId);
-                final String collectionIdToBeRemoved = materializedCollection.getCollectionId();
+                final MaterializedCollection materializedCollectionToRemove = materializedCollectionDAO.getMaterializedCollection(fkAccountId, removeListId);
+                final String collectionIdToBeRemoved = materializedCollectionToRemove.getCollectionId();
                 // stub to be implemented later.
                 break;
             case ADD_ITEM_TO_LIST:
@@ -151,14 +159,13 @@ public class FVOBackendApplication extends io.dropwizard.Application<RPiConfigur
                     final List<Product> products = getFKDetails.searchKeyWordsAndReturnProducts(itemQuery);
                     final Product product = products.get(0);
                     final String productId = product.getProductId();
-                    final String productTitle = "Sugar";
+                    final String productTitle = product.getProductTitle() == null ? itemQuery : product.getProductTitle();
 
                     final MaterializedCollection materializedCollectionToBeUpdated = materializedCollectionDAO.getMaterializedCollection(fkAccountId, listIdAddItem);
 
                     if(isAbleToAddProductToCollection(materializedCollectionToBeUpdated, productId)) {
                         MaterializedFSN materializedFSN = new MaterializedFSN();
                         materializedFSN.setFkAccountId(fkAccountId);
-                        materializedFSN.setDeviceId(deviceId);
                         materializedFSN.setFsnId(productId);
                         materializedFSN.setFsnName(productTitle);
                         materializedFSN.setListItem(itemQuery);

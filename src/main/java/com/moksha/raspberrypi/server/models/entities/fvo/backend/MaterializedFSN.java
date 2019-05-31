@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -21,6 +22,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "materialized_fsn")
+@ToString
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class MaterializedFSN extends AbstractTimeEntity {
 
@@ -31,9 +33,6 @@ public class MaterializedFSN extends AbstractTimeEntity {
 
     @Column(name = "fk_account_id")
     private String fkAccountId;
-
-    @Column(name = "description")
-    private String deviceId;
 
     @Column(name = "list_name")
     private String listName;
