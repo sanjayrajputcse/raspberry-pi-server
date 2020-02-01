@@ -1,12 +1,13 @@
 package com.moksha.raspberrypi.server.dao;
 
-import io.dropwizard.hibernate.AbstractDAO;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 
 import java.io.Serializable;
 import java.util.List;
+
+import io.dropwizard.hibernate.AbstractDAO;
 
 public abstract class HDao<T> extends AbstractDAO<T> {
 
@@ -37,6 +38,7 @@ public abstract class HDao<T> extends AbstractDAO<T> {
 
     public void delete(T t) {
         super.currentSession().delete(t);
+        super.currentSession().flush();
     }
 
     //-------------------------- calls with new session/transaction --------------------------

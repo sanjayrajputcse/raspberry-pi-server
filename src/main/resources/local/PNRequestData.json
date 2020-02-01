@@ -1,0 +1,75 @@
+{
+  "contextId": "TS18HKGSTSBR_234518",
+  "sla": "H",
+  "channel": "push",
+  "expiryTs": 1561855565000,
+  "channelInfo": {
+    "type": "PN",
+    "deviceIds": [
+      "17ca9de766aedc444c4b8574e143c3e5",
+      "01d929401523ad5b6faa756e3b648446",
+      "9c41fef0884f9ab8b0ecc1da921d71bb",
+      "Toupdate"
+    ],
+    "ackRequired": true,
+    "delayWhileIdle": false,
+    "channelId": "fk_channel_deal_disc_sale"
+  },
+  "channelData": {
+    "type": "PN",
+    "data": {
+      "id": "toUpdate",
+      "notification_type": "Text",
+      "priority": "1",
+      "type": "1",
+      "title": "YOUR LIST IS READY!!",
+      "summary": "EASY GROCERY LIST",
+      "message": "powered by Flipkart-Voice-Assistant",
+      "message_extras": "powered by Flipkart-Voice-Assistant",
+      "enableSound": true,
+      "doDismissOnExpire": "true",
+      "doDismissOnClick": "true",
+      "expiry": "1561855565000",
+      "relative_to": null,
+      "omniture": "EM-MPNTS18HKGSTSBR_TE",
+      "isScheduledPN": false,
+      "timeToshowPN": null,
+      "action": {
+        "screenType": "productListView",
+        "type": "NAVIGATION",
+        "omnitureData": "EM-MPNTS18HKGSTSBR_TE",
+        "originalUrl": "https://www.flipkart.com/all/~cs-h2pg3ulcx0/pr?sid=all",
+        "url": "https://www.flipkart.com/all/~cs-h2pg3ulcx0/pr?sid=all",
+        "params": {
+          "valid": true,
+          "url": "https://www.flipkart.com/all/~cs-h2pg3ulcx0/pr?sid=all"
+        },
+        "tracking": {
+          "omnitureData": "EM-MPNTS18HKGSTSBR_TE",
+          "notificationId": "TS18HKGSTSBR"
+        },
+        "fallback": null,
+        "loginType": "LEGACY_LOGIN"
+      },
+      "dynamicIconImage": "https://rukminim1.flixcart.com/flap/96/96/image/8e2759e5d8e1e74d.jpg?q=50",
+      "big_image": null,
+      "LEDColor": null
+    }
+  },
+  "channelDataMeta": {
+    "bucket": "all",
+    "subBucket": "all",
+    "domain": "flipkart",
+    "type": "default",
+    "tags": [
+      "TRANSACTIONAL",
+      "NEO_TRANS"
+    ],
+    "subType": "default",
+    "bucketV2": "offers",
+    "subBucketV2": "deals",
+    "fcsBucketId": "all",
+    "isTransactional": true,
+    "isTest": false
+  }
+}
